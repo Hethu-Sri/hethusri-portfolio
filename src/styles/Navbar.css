@@ -1,0 +1,143 @@
+.floating-sidebar {
+    position: fixed;
+    left: 16px;
+    top: 16px;
+    bottom: 16px;
+  
+    width: 72px;
+    border-radius: 16px;
+  
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  
+    padding: 24px 0;
+    z-index: 1000;
+  
+    background: var(--sidebar-bg);
+    color: var(--sidebar-text);
+    border: 1px solid var(--sidebar-border);
+    box-shadow: 0 8px 24px var(--shadow);
+  }
+  
+  /* ================================
+     NAV ICONS
+  ================================ */
+  
+  .nav-icons {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .nav-icons a {
+    position: relative;
+    text-decoration: none;
+  
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+  
+    border: 1px solid var(--sidebar-border);
+    background: transparent;
+    color: var(--sidebar-text);
+  
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  
+    font-size: 13px;
+    font-weight: 700;
+  
+    transition:
+      background 0.2s ease,
+      border-color 0.2s ease,
+      transform 0.15s ease,
+      box-shadow 0.15s ease;
+  }
+  
+  /* Hover */
+  .nav-icons a:hover .icon {
+    background: rgba(255, 255, 255, 0.15);
+    transform: scale(1.05);
+  }
+  
+  /* Active */
+  .nav-icons a.active .icon {
+    background: var(--nav-active-bg);
+    color: var(--nav-active-text);
+    border-color: var(--nav-active-bg);
+    box-shadow: var(--nav-active-shadow);
+  }
+  
+  /* ================================
+     TOOLTIP LABEL
+  ================================ */
+  
+  .label {
+    position: absolute;
+    left: 56px;
+  
+    background: #111;
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 6px;
+  
+    font-size: 16px;
+    white-space: nowrap;
+  
+    opacity: 0;
+    transform: translateX(-4px);
+    pointer-events: none;
+  
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+  
+  .nav-icons a:hover .label {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  
+  /* ================================
+     THEME TOGGLE (BOTTOM-LOCKED)
+  ================================ */
+  
+  .theme-toggle {
+    margin-top: auto;
+    margin-bottom: 12px;
+  
+    background: none;
+    border: none;
+  
+    font-size: 16px;
+    cursor: pointer;
+    color: var(--sidebar-text);
+  }
+  
+  /* ================================
+   HS HOME ICON
+================================ */
+
+.hs-icon {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  
+    font-family: "Courier Prime", monospace;
+    text-transform: uppercase;
+  
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  

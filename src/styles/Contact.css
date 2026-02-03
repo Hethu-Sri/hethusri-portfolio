@@ -1,0 +1,79 @@
+.contact-wrapper {
+  padding-top: 48px;
+  margin-bottom: 200px;
+}
+
+/* ================================
+   HEADING
+================================ */
+
+.contact-heading {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.contact-line {
+  width: 4px;
+  height: 32px;
+  background-color: var(--border-color);
+  opacity: 0.4;
+}
+
+.contact-title {
+  font-size: 40px;
+  font-weight: 700;
+}
+
+.contact-subtitle {
+  margin-top: 12px;
+  max-width: 80ch;
+  color: var(--muted-text);
+}
+
+/* ================================
+   CONTENT
+================================ */
+
+.contact-email {
+  margin-top: 32px;
+  font-size: 15px;
+}
+
+.contact-email a {
+  color: var(--text-color);
+  text-decoration: none;
+  border-bottom: 1px dotted var(--border-color);
+}
+
+.contact-email a:hover {
+  opacity: 0.85;
+}
+
+/* ================================
+   SOCIAL BUBBLES
+================================ */
+
+.contact-bubbles {
+  margin-top: 24px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.contact-bubbles a {
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border-color);
+
+  font-size: 13px;
+  color: var(--text-color);
+  text-decoration: none;
+
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.contact-bubbles a:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px var(--shadow);
+}

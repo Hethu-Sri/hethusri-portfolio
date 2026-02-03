@@ -1,0 +1,355 @@
+/* ================================
+   LAYOUT VARIABLES
+================================ */
+
+:root {
+  /* Sidebar */
+  --sidebar-width: 72px;
+  --sidebar-offset: 16px;
+
+  /* Content spacing */
+  --content-padding-x: clamp(16px, 3vw, 40px);
+  --content-padding-y: 32px;
+  --text-left-padding: 10px;
+
+  /* Page (LIGHT MODE) */
+  --bg-color: #ebeff1;
+  --text-color: #0B1220;
+  --muted-text: #1F2937;
+  --border-color: #1F2937;
+
+  /* Cards */
+  --card-bg: #ffffff;
+  --shadow: rgba(0, 0, 0, 0.06);
+
+  /* Navbar */
+  --sidebar-bg: #9BCBE5;
+  --sidebar-text: #0B1220;
+  --sidebar-border: #1F2937;
+
+  /* Active nav */
+  --nav-active-bg: #0B1220;
+  --nav-active-text: #9BCBE5;
+  --nav-active-shadow: none;
+
+  /* Project hover gradient */
+  --project-gradient: linear-gradient(
+    135deg,
+    rgba(155, 203, 229, 0.45),
+    rgba(127, 184, 214, 0.35)
+  );
+}
+
+/* ================================
+   DARK MODE
+================================ */
+
+[data-theme="dark"] {
+  --bg-color: #1c1c22;
+  --text-color: #ebeff1;
+  --muted-text: #7FB8D6;
+  --border-color: #7FB8D6;
+
+  --card-bg: #0F172A;
+  --shadow: rgba(0, 0, 0, 0.5);
+
+  --sidebar-bg: #0B1220;
+  --sidebar-text: #9BCBE5;
+  --sidebar-border: #ebeff1;
+
+  --nav-active-bg: #7FB8D6;
+  --nav-active-text: #0B1220;
+  --nav-active-shadow: 0 0 0 6px rgba(127, 184, 214, 0.35);
+
+  /* --project-gradient: linear-gradient(
+    135deg,
+    rgba(127, 184, 214, 0.55),
+    rgba(155, 203, 229, 0.35)
+  ); */
+  --project-hover-gradient: linear-gradient(
+    90deg,
+    rgba(127, 184, 214, 0.20),   /* left: stronger blue */
+    rgba(155, 203, 229, 0.08)    /* right: softer blue */
+  );
+}
+
+/* ================================
+   RESET / BASE
+================================ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+
+  background-color: var(--bg-color);
+
+  /* LIGHT MODE DOTS (default) */
+  background-image: radial-gradient(
+    rgba(11, 18, 32, 0.14) 1px,
+    transparent 1px
+  );
+  background-size: 20px 20px;
+
+  color: var(--text-color);
+  font-family: "Courier Prime", monospace;
+  line-height: 1.7;
+
+  transition:
+    background-size 0.6s ease,
+    background-position 0.6s ease;
+}
+
+
+
+/* 🌙 DARK MODE DOTS */
+body[data-theme="dark"] {
+  background-image:
+    radial-gradient(
+      rgba(155, 203, 229, 0.25) 1px,
+      transparent 1px
+    ),
+    radial-gradient(
+      rgba(155, 203, 229, 0.12) 1px,
+      transparent 1px
+    );
+
+  background-size:
+    20px 20px,
+    40px 40px;
+
+  background-position:
+    0 0,
+    10px 10px;
+}
+
+
+
+/* ================================
+   APP LAYOUT (CRITICAL FIX)
+================================ */
+
+.app-layout {
+  display: flex;
+}
+
+/* Sidebar stays fixed visually */
+.floating-sidebar {
+  position: fixed;
+  left: var(--sidebar-offset);
+  top: 16px;
+  bottom: 16px;
+
+  width: var(--sidebar-width);
+}
+
+/* ================================
+   SCROLL CUE
+================================ */
+
+.home-page {
+  position: relative;
+}
+
+.scroll-cue {
+  position: absolute;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: var(--muted-text);
+  opacity: 0.8;
+
+  pointer-events: none;
+}
+
+.scroll-line {
+  width: 1px;
+  height: 24px;
+  background-color: var(--text-color);
+  animation: scrollPulse 2s ease-in-out infinite;
+}
+
+@keyframes scrollPulse {
+  0% {
+    opacity: 0.3;
+    height: 16px;
+  }
+  50% {
+    opacity: 1;
+    height: 24px;
+  }
+  100% {
+    opacity: 0.3;
+    height: 16px;
+  }
+}
+
+/* ================================
+   MAIN CONTENT
+================================ */
+
+.main-content {
+  flex: 1;
+
+  margin-left: calc(
+    var(--sidebar-width) + var(--sidebar-offset) * 2
+  );
+
+  padding:
+    var(--content-padding-y)
+    var(--content-padding-x);
+}
+
+/* ================================
+   SECTIONS
+================================ */
+
+.section {
+  padding-top: 64px;
+  padding-bottom: 96px;
+}
+
+@media (max-width: 768px) {
+  .section {
+    padding-top: 48px;
+    padding-bottom: 72px;
+  }
+}
+
+/* ================================
+   TYPOGRAPHY
+================================ */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  padding-left: var(--text-left-padding);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 700;
+  text-align: left;
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+p {
+  font-weight: 400;
+  margin-bottom: 16px;
+  max-width: 65ch;
+}
+
+/* Justify long-form text only */
+.about-editorial p,
+.experience-content p {
+  text-align: justify;
+  text-justify: inter-word;
+}
+
+/* ================================
+   LINKS
+================================ */
+
+a {
+  color: var(--text-color);
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  padding-left: var(--text-left-padding);
+}
+
+a:hover {
+  opacity: 0.75;
+}
+
+/* ================================
+   BUTTONS
+================================ */
+
+button {
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+
+  padding: 0.6em 1.2em;
+
+  background: transparent;
+  color: var(--text-color);
+
+  font-size: 1em;
+  font-family: inherit;
+  font-weight: 500;
+
+  cursor: pointer;
+  transition: opacity 0.2s ease, border-color 0.2s ease;
+}
+
+button:hover {
+  opacity: 0.8;
+}
+
+/* ================================
+   PROJECT CARD GRADIENT
+================================ */
+
+.project-card {
+  position: relative;
+  background: var(--card-bg);
+  overflow: hidden;
+}
+
+.project-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background: var(--project-gradient);
+  opacity: 0;
+
+  transition: opacity 0.25s ease;
+  pointer-events: none;
+
+  border-radius: inherit;
+}
+
+.project-card:hover::before {
+  opacity: 1;
+}
+
+/* ================================
+   ALIGNMENT SAFETY
+================================ */
+
+section,
+.project-card,
+.experience-content,
+.contact-wrapper,
+.home-page,
+.about-page {
+  text-align: left;
+}

@@ -1,0 +1,48 @@
+/* ================================
+   FOOTER
+================================ */
+
+.site-footer {
+    margin-top: 64px;
+    padding: 32px 0 24px;
+  
+    border-top: 1px solid var(--border-color);
+  
+    color: var(--muted-text);
+    font-size: 12px;
+  }
+  
+  .footer-content {
+    margin-left: calc(
+  var(--sidebar-left-offset) +
+  var(--sidebar-width) +
+  var(--sidebar-gap)
+);
+    padding-left: 10px; /* your global text offset */
+  
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+  
+    letter-spacing: 0.3px;
+  }
+
+  .footer-content1 {
+    margin-left: calc(
+  var(--sidebar-left-offset) +
+  var(--sidebar-width) +
+  var(--sidebar-gap)
+);
+    padding-left: 10px; /* your global text offset */
+  
+    display: flex;
+    justify-content: right;
+    gap: 8px;
+  
+    letter-spacing: 0.3px;
+  }
+  
+  .footer-separator {
+    opacity: 0.6;
+  }
+  

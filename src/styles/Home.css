@@ -1,0 +1,143 @@
+/* ================================
+   HOME PAGE (TERMINAL STYLE)
+================================ */
+
+.home-page {
+    min-height: 100vh;
+    position: relative;
+  
+    display: flex;
+    align-items: center;
+  }
+  
+  /* ================================
+     TERMINAL BLOCK
+  ================================ */
+  
+  .home-page .terminal-block {
+    font-size: 15px;
+    line-height: 1.7;
+    white-space: pre-wrap;
+    max-width: 900px;
+  }
+  
+  .home-page .terminal-line {
+    margin: 0;
+    color: var(--text-color);
+  }
+  
+  .home-page .terminal-cursor {
+    animation: blink 1s step-end infinite;
+  }
+  
+  
+  /* Slight visual separation between commands */
+  .terminal-line + .terminal-line {
+    margin-top: 4px;
+  }
+  
+  /* ================================
+     CURSOR
+  ================================ */
+  
+  /* .terminal-cursor {
+    display: inline-block;
+    margin-top: 6px;
+  
+    font-size: 15px;
+    color: var(--text-color);
+  
+    animation: blink 1s step-end infinite;
+  } */
+  
+  @keyframes blink {
+    50% {
+      opacity: 0;
+    }
+  }
+  
+  /* ================================
+     SCROLL CUE
+  ================================ */
+  
+  .home-scroll-cue {
+    position: absolute;
+    bottom: 32px;
+  
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  
+    font-size: 11px;
+    letter-spacing: 1px;
+    opacity: 0.6;
+  }
+  
+  .scroll-line {
+    width: 1px;
+    height: 24px;
+    background-color: var(--text-color);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+  
+  @keyframes scrollPulse {
+    0% {
+      opacity: 0.3;
+      height: 16px;
+    }
+    50% {
+      opacity: 1;
+      height: 24px;
+    }
+    100% {
+      opacity: 0.3;
+      height: 16px;
+    }
+  }
+  
+  /* ================================
+     RESPONSIVE
+  ================================ */
+  
+  @media (max-width: 768px) {
+    .terminal-block {
+      font-size: 14px;
+    }
+  }
+
+  /* ================================
+   TERMINAL HEADINGS
+================================ */
+
+.terminal-h1 {
+    font-size: 56px;
+    font-weight: 700;
+    margin: 12px 0 8px;
+    line-height: 1.1;
+    color: var(--text-color);
+  }
+  
+  .terminal-h2 {
+    font-size: 18px;
+    font-weight: 400;
+    margin-top: 12px;
+    max-width: 720px;
+    color: var(--muted-text);
+  }
+
+  /* ================================
+   TERMINAL COLOR DETAIL
+================================ */
+
+.terminal-prompt {
+  color: var(--muted-text);
+}
+
+.terminal-command {
+  color: #7FB8D6; /* soft blue from your palette */
+  font-weight: 500;
+}
+
+  
+  
