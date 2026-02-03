@@ -141,3 +141,8 @@
     justify-content: center;
   }
   
+  @media (max-width: 768px) {
+    .floating-sidebar {
+      display: none !important;
+    }
+  }

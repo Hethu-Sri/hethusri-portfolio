@@ -353,3 +353,78 @@ section,
 .about-page {
   text-align: left;
 }
+
+/* ================================
+   MOBILE LAYOUT FIX
+================================ */
+
+@media (max-width: 768px) {
+  /* Hide sidebar on mobile */
+  .floating-sidebar {
+    display: none;
+  }
+
+  /* Let content take full width */
+  .main-content {
+    margin-left: 0;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  /* Reduce section spacing */
+  section {
+    margin-left: 0 !important;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  h1 {
+    font-size: 2.2em;
+    line-height: 1.2;
+  }
+
+  h2 {
+    font-size: 1.6em;
+  }
+
+  p {
+    font-size: 14px;
+    line-height: 1.7;
+    max-width: 100%;
+  }
+}
+@media (hover: none) {
+  .project-card::before,
+  .skills-card::before,
+  .tech-bubbles::before {
+    display: none;
+  }
+
+  .icon-btn::after,
+  .icon-btn::before {
+    display: none;
+  }
+}
+@media (max-width: 768px) {
+  .projects-grid,
+  .experience-body,
+  .skills-layout,
+  .about-layout {
+    grid-template-columns: 1fr !important;
+    display: block;
+  }
+}
+@media (max-width: 768px) {
+  .about-photo-card {
+    margin-top: 32px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .about-photo-frame img {
+    max-width: 220px;
+  }
+}
+
