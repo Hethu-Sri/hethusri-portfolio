@@ -47,7 +47,7 @@ const About = () => {
           <div className="about-photo-card">
             <div className="about-photo-frame">
               <img
-                src="/public/profile.jpg"
+                src="/profile.jpg"
                 alt="Hethu Sri"
                 draggable="false"
               />
