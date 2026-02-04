@@ -1,0 +1,68 @@
+/* MOBILE ONLY */
+@media (min-width: 768px) {
+    .mobile-command-nav {
+      display: none;
+    }
+  }
+  
+  .mobile-command-nav {
+    position: fixed;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+  }
+  
+  /* ⌘ Button */
+  .command-toggle {
+    background: #0b1220;
+    color: #9bcbe5;
+    border: 1px solid rgba(155, 203, 229, 0.35);
+    border-radius: 10px;
+    padding: 8px 14px;
+    font-size: 16px;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+  }
+  
+  /* Dropdown */
+  .command-menu {
+    margin-top: 10px;
+    background: #0b1220;
+    border: 1px solid rgba(155, 203, 229, 0.25);
+    border-radius: 12px;
+    padding: 10px;
+    min-width: 180px;
+    animation: slideDown 0.15s ease-out;
+  }
+  
+  /* Items */
+  .command-item {
+    display: block;
+    width: 100%;
+    background: transparent;
+    color: #9bcbe5;
+    border: none;
+    text-align: left;
+    font-family: monospace;
+    font-size: 14px;
+    padding: 8px 6px;
+    cursor: pointer;
+  }
+  
+  .command-item:hover {
+    color: #ffffff;
+  }
+  
+  /* Animation */
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  

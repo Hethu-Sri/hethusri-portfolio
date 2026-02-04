@@ -10,13 +10,19 @@ import Skills from "./sections/Skills";
 import Projects from "./sections/Projects";
 import Contact from "./sections/Contact";
 import Footer from "./components/Footer";
+import MobileCommandNav from "./components/MobileCommandNav";
+import MobileThemeToggle from "./components/MobileThemeToggle";
 
 function App() {
   const [count, setCount] = useState(0)
 
   return (
     <>
+    <div className="mobile-hs-logo">HS</div>
+
       <Navbar />
+      <MobileCommandNav />
+      <MobileThemeToggle />
       <Home />
       <About />
       <Experience />
