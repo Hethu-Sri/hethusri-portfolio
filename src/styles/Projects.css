@@ -234,3 +234,77 @@
   opacity: 1;
   transform: translateX(-50%) translateY(0);
 }
+
+/* ================================
+   MOBILE COMPACT CARD SPACING
+================================ */
+
+@media (max-width: 768px) {
+
+  /* Card container */
+  .project-card {
+    padding: 14px;          /* ↓ from 20px */
+    min-height: unset;      /* let content define height */
+  }
+
+  /* Project title */
+  .project-header h3 {
+    font-size: 15px;
+    line-height: 1.25;
+    margin-bottom: 8px;
+  }
+
+  /* Description + bullets wrapper */
+  .project-points {
+    margin-left: -14px;     /* align with reduced padding */
+    padding-right: 14px;
+    font-size: 14px;
+    line-height: 1.5;       /* ↓ tighter text */
+    margin-bottom: 10px;
+  }
+
+  /* Bullet items */
+  .project-points li {
+    margin-left: 12px;
+    line-height: 1.45;
+    padding-right: 12px;
+  }
+
+  /* Tech stack bubbles */
+  .project-meta {
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+
+  .project-meta span {
+    font-size: 10px;
+    padding: 4px 10px;      /* smaller pills */
+  }
+
+  /* Header spacing */
+  .project-header {
+    margin-bottom: 8px;
+  }
+}
+/* ================================
+   MOBILE TEXT FIX (IMPORTANT)
+================================ */
+
+@media (max-width: 768px) {
+
+  /* Fix ugly word spacing caused by justify + monospace */
+  .project-points,
+  .project-points li {
+    color: color-mix(in srgb, var(--text-color) 80%, transparent);
+    font-size: 13px;
+    text-align: left;          
+    word-spacing: normal;      
+    letter-spacing: 0;         
+    line-height: 1.5;          
+  }
+
+  .project-points li {
+    margin-top: 4px;
+  }
+}
+

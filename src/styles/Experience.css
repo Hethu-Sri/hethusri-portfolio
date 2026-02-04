@@ -22,14 +22,14 @@
     display: flex;
     align-items: center;
     gap: 12px;
-  }
-  
-  .experience-line {
+}
+
+.experience-line {
     width: 4px;
     height: 32px;
     background-color: var(--border-color);
     opacity: 0.4;
-  }
+}
 
 /* ================================
      TABS (SINGLE LINE)
@@ -189,5 +189,76 @@
 
     .experience-tech-panel {
         margin-top: 24px;
+    }
+}
+
+.experience-hint {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .experience-hint {
+        display: block;
+        font-size: 12px;
+        color: var(--muted-text);
+        margin-top: 6px;
+        margin-bottom: 16px;
+        padding-left: var(--text-left-padding);
+        opacity: 0.8;
+    }
+}
+
+/* ================================
+   MOBILE: Hide tech panel
+================================ */
+
+@media (max-width: 768px) {
+    .experience-tech-panel {
+      display: none;
+    }
+  }
+  
+
+@media (max-width: 768px) {
+    .experience-tabs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 20px;
+    }
+
+    .experience-tabs button {
+        border: 1px solid var(--border-color);
+        border-radius: 999px;
+        padding: 6px 14px;
+        font-size: 13px;
+        background: transparent;
+        color: var(--text-color);
+        opacity: 0.7;
+        transition: all 0.2s ease;
+    }
+
+    .experience-tabs button.active {
+        background: var(--card-bg);
+        opacity: 1;
+        box-shadow: 0 4px 12px var(--shadow);
+    }
+}
+
+@media (max-width: 768px) {
+    .experience-content {
+        animation: experienceFade 0.25s ease;
+    }
+
+    @keyframes experienceFade {
+        from {
+            opacity: 0;
+            transform: translateY(6px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 }

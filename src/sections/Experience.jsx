@@ -13,6 +13,7 @@ const Experience = () => {
           <span className="experience-line" />
           <h1 className="experience-title">Where I’ve Worked</h1>
         </div>
+        <p className="experience-hint">Tap a company to view details</p>
 
         {/* Tabs */}
         <div className="experience-tabs">
