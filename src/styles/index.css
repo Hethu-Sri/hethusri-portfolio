@@ -38,6 +38,11 @@
     rgba(155, 203, 229, 0.45),
     rgba(127, 184, 214, 0.35)
   );
+
+  /* Accent / glow (light mode) */
+  --accent: #4A9DC4;
+  --glow: rgba(74, 157, 196, 0.5);
+  --accent-line-opacity: 0.4;
 }
 
 /* ================================
@@ -45,32 +50,32 @@
 ================================ */
 
 [data-theme="dark"] {
-  --bg-color: #1c1c22;
+  --bg-color: #0d1117;
   --text-color: #ebeff1;
   --muted-text: #7FB8D6;
-  --border-color: #7FB8D6;
+  --border-color: #5BC8F5;
 
   --card-bg: #0F172A;
   --shadow: rgba(0, 0, 0, 0.5);
 
-  --sidebar-bg: #0B1220;
+  --sidebar-bg: rgba(11, 18, 32, 0.75);
   --sidebar-text: #9BCBE5;
-  --sidebar-border: #ebeff1;
+  --sidebar-border: rgba(91, 200, 245, 0.25);
 
-  --nav-active-bg: #7FB8D6;
+  --nav-active-bg: #5BC8F5;
   --nav-active-text: #0B1220;
-  --nav-active-shadow: 0 0 0 6px rgba(127, 184, 214, 0.35);
+  --nav-active-shadow: 0 0 0 6px rgba(91, 200, 245, 0.3);
 
-  /* --project-gradient: linear-gradient(
-    135deg,
-    rgba(127, 184, 214, 0.55),
-    rgba(155, 203, 229, 0.35)
-  ); */
   --project-hover-gradient: linear-gradient(
     90deg,
-    rgba(127, 184, 214, 0.20),   /* left: stronger blue */
-    rgba(155, 203, 229, 0.08)    /* right: softer blue */
+    rgba(91, 200, 245, 0.18),
+    rgba(155, 203, 229, 0.06)
   );
+
+  /* Accent / glow (dark mode — electric blue) */
+  --accent: #5BC8F5;
+  --glow: rgba(91, 200, 245, 0.65);
+  --accent-line-opacity: 1;
 }
 
 /* ================================
@@ -108,25 +113,13 @@ body {
 
 
 
-/* 🌙 DARK MODE DOTS */
+/* 🌙 DARK MODE — graph paper grid */
 body[data-theme="dark"] {
   background-image:
-    radial-gradient(
-      rgba(155, 203, 229, 0.25) 1px,
-      transparent 1px
-    ),
-    radial-gradient(
-      rgba(155, 203, 229, 0.12) 1px,
-      transparent 1px
-    );
-
-  background-size:
-    20px 20px,
-    40px 40px;
-
-  background-position:
-    0 0,
-    10px 10px;
+    linear-gradient(rgba(91, 200, 245, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(91, 200, 245, 0.045) 1px, transparent 1px);
+  background-size: 40px 40px;
+  background-position: 0 0;
 }
 
 
@@ -474,6 +467,353 @@ section,
   .icon-btn::before {
     display: none;
   }
+}
+
+/* ================================
+   AURORA BACKGROUND
+================================ */
+
+.aurora-bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+
+[data-theme="dark"] .aurora-bg {
+  opacity: 1;
+}
+
+.aurora-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+}
+
+.aurora-orb-1 {
+  width: 700px;
+  height: 700px;
+  background: radial-gradient(circle, rgba(127, 184, 214, 0.18), transparent 70%);
+  top: -250px;
+  right: -150px;
+  animation: auroraFloat 22s ease-in-out infinite;
+}
+
+.aurora-orb-2 {
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(155, 203, 229, 0.12), transparent 70%);
+  bottom: 15%;
+  left: -120px;
+  animation: auroraFloat 28s ease-in-out infinite reverse;
+  animation-delay: -8s;
+}
+
+.aurora-orb-3 {
+  width: 350px;
+  height: 350px;
+  background: radial-gradient(circle, rgba(74, 157, 196, 0.15), transparent 70%);
+  top: 45%;
+  right: 25%;
+  animation: auroraFloat 18s ease-in-out infinite;
+  animation-delay: -14s;
+}
+
+@keyframes auroraFloat {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%       { transform: translate(40px, -60px) scale(1.06); }
+  66%       { transform: translate(-30px, 40px) scale(0.94); }
+}
+
+/* ================================
+   SCROLL REVEAL
+================================ */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(44px) scale(0.97);
+  transition:
+    opacity 1.1s cubic-bezier(0.22, 1, 0.36, 1) var(--delay, 0ms),
+    transform 1.1s cubic-bezier(0.22, 1, 0.36, 1) var(--delay, 0ms);
+  will-change: opacity, transform;
+}
+
+.reveal.revealed {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* Section wrappers that act as an observer trigger (no visual animation) */
+.section-trigger {
+  /* gets .revealed added by IntersectionObserver, no opacity/transform change */
+}
+
+/* ================================
+   GLOBAL SECTION ACCENT LINES GLOW
+================================ */
+
+[data-theme="dark"] .about-line,
+[data-theme="dark"] .skills-line,
+[data-theme="dark"] .experience-line,
+[data-theme="dark"] .project-line,
+[data-theme="dark"] .contact-line {
+  background-color: var(--accent);
+  opacity: 1;
+  box-shadow: 0 0 16px var(--glow), 0 0 6px var(--glow);
+}
+
+/* ================================
+   SECTION ACCENT LINE GROW ON REVEAL
+================================ */
+
+.about-line,
+.skills-line,
+.experience-line,
+.project-line,
+.contact-line {
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.25s;
+}
+
+.reveal.revealed .about-line,
+.reveal.revealed .skills-line,
+.reveal.revealed .experience-line,
+.reveal.revealed .project-line,
+.reveal.revealed .contact-line {
+  transform: scaleY(1);
+}
+
+/* ================================
+   DARK MODE CARD GLASS EFFECT
+================================ */
+
+[data-theme="dark"] .project-card {
+  background: rgba(15, 23, 42, 0.85);
+  border-color: rgba(127, 184, 214, 0.15);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+[data-theme="dark"] .project-card:hover {
+  border-color: rgba(127, 184, 214, 0.4);
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.55),
+    0 0 40px rgba(127, 184, 214, 0.1);
+}
+
+[data-theme="dark"] .skills-card {
+  background: rgba(15, 23, 42, 0.85);
+  border-color: rgba(127, 184, 214, 0.15);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+[data-theme="dark"] .tech-bubbles {
+  background: rgba(15, 23, 42, 0.85);
+  border-color: rgba(127, 184, 214, 0.15);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* ================================
+   DARK MODE NAME TEXT GLOW
+================================ */
+
+[data-theme="dark"] .terminal-h1 {
+  text-shadow: 0 0 60px rgba(127, 184, 214, 0.3), 0 0 20px rgba(127, 184, 214, 0.15);
+}
+
+/* ================================
+   DARK MODE EXPERIENCE TABS
+================================ */
+
+[data-theme="dark"] .experience-tabs button.active {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+/* ================================
+   CUSTOM SCROLLBAR
+================================ */
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(127, 184, 214, 0.3);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(91, 200, 245, 0.6);
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(127, 184, 214, 0.3) transparent;
+}
+
+/* ================================
+   SCROLL PROGRESS BAR
+================================ */
+
+.scroll-progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    #5BC8F5 0%,
+    rgba(155, 203, 229, 0.85) 60%,
+    rgba(91, 200, 245, 0.5) 100%
+  );
+  transform-origin: left center;
+  transform: scaleX(0);
+  z-index: 10000;
+  pointer-events: none;
+  box-shadow: 0 0 10px rgba(91, 200, 245, 0.6), 0 0 4px rgba(91, 200, 245, 0.4);
+}
+
+/* ================================
+   TOP ACCENT BAR
+================================ */
+
+.top-accent-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(91, 200, 245, 0.0) 10%,
+    #5BC8F5 40%,
+    rgba(155, 203, 229, 0.7) 70%,
+    transparent 100%
+  );
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+[data-theme="dark"] .top-accent-bar {
+  opacity: 1;
+}
+
+/* ================================
+   SECTION WATERMARKS
+================================ */
+
+.section-watermark {
+  position: absolute;
+  top: -20px;
+  right: -10px;
+  font-size: 160px;
+  font-weight: 900;
+  line-height: 0.9;
+  color: var(--accent);
+  opacity: 0.03;
+  pointer-events: none;
+  user-select: none;
+  font-family: "Courier Prime", monospace;
+  letter-spacing: -6px;
+  z-index: 0;
+}
+
+[data-theme="dark"] .section-watermark {
+  opacity: 0.05;
+}
+
+/* Wrappers that hold watermarks need position:relative */
+.about-page,
+.experience-wrapper,
+.skills-wrapper,
+.project-wrapper,
+.contact-wrapper {
+  position: relative;
+  overflow: hidden;
+}
+
+/* ================================
+   SECTION TITLE NUMBERS
+================================ */
+
+.about-title::before    { content: "01.  "; }
+.experience-title::before { content: "02.  "; }
+.skills-title::before   { content: "03.  "; }
+.project-title::before  { content: "04.  "; }
+.contact-title::before  { content: "05.  "; }
+
+.about-title::before,
+.experience-title::before,
+.skills-title::before,
+.project-title::before,
+.contact-title::before {
+  color: var(--accent);
+  font-size: 0.58em;
+  font-weight: 400;
+  letter-spacing: 2px;
+  /* Start hidden, slide in on reveal */
+  opacity: 0;
+  display: inline-block;
+  transform: translateX(-14px);
+  transition:
+    transform 0.55s cubic-bezier(0.4, 0, 0.2, 1) 0.2s,
+    opacity 0.55s ease 0.2s;
+  vertical-align: middle;
+  position: relative;
+  top: -2px;
+}
+
+/* Animate in when parent section enters viewport */
+.about-page.revealed .about-title::before,
+.experience-wrapper.revealed .experience-title::before,
+.skills-wrapper.revealed .skills-title::before,
+.project-wrapper.revealed .project-title::before,
+.contact-wrapper.revealed .contact-title::before {
+  opacity: 0.85;
+  transform: translateX(0);
+}
+
+/* ================================
+   AURORA ORB COLOR UPDATE
+================================ */
+
+.aurora-orb-1 {
+  background: radial-gradient(circle, rgba(91, 200, 245, 0.16), transparent 70%);
+}
+
+.aurora-orb-2 {
+  background: radial-gradient(circle, rgba(127, 184, 214, 0.10), transparent 70%);
+}
+
+.aurora-orb-3 {
+  background: radial-gradient(circle, rgba(91, 200, 245, 0.13), transparent 70%);
+}
+
+/* ================================
+   DARK MODE NAV ACTIVE GLOW
+================================ */
+
+[data-theme="dark"] .nav-icons a.active .icon {
+  box-shadow:
+    0 0 0 2px rgba(91, 200, 245, 0.5),
+    0 0 20px rgba(91, 200, 245, 0.35),
+    0 0 40px rgba(91, 200, 245, 0.15);
 }
 @media (max-width: 768px) {
   .projects-grid,

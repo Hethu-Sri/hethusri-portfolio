@@ -25,55 +25,182 @@
   font-weight: 700;
 }
 
-.contact-subtitle {
-  margin-top: 12px;
-  max-width: 80ch;
-  color: var(--muted-text);
-}
-
 /* ================================
-   CONTENT
+   TERMINAL BLOCK
 ================================ */
 
-.contact-email {
-  margin-top: 32px;
+.contact-terminal {
+  margin-top: 40px;
+  font-family: "Courier Prime", monospace;
   font-size: 15px;
+  max-width: 600px;
+  padding: 28px 32px;
+  border-radius: 14px;
+  border: 1px solid var(--border-color);
+  background: var(--card-bg);
+  box-shadow: 0 8px 28px var(--shadow);
 }
 
-.contact-email a {
-  color: var(--text-color);
-  text-decoration: none;
-  border-bottom: 1px dotted var(--border-color);
-}
-
-.contact-email a:hover {
-  opacity: 0.85;
+[data-theme="dark"] .contact-terminal {
+  background: rgba(8, 13, 24, 0.88);
+  border-color: rgba(91, 200, 245, 0.18);
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(91, 200, 245, 0.06),
+    0 0 60px rgba(91, 200, 245, 0.04);
 }
 
 /* ================================
-   SOCIAL BUBBLES
+   SSH PROMPT
 ================================ */
 
-.contact-bubbles {
-  margin-top: 24px;
+.contact-ssh-prompt {
   display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
+  align-items: center;
+  gap: 8px;
 }
 
-.contact-bubbles a {
-  padding: 8px 14px;
-  border-radius: 999px;
-  border: 1px solid var(--border-color);
+.ssh-dollar {
+  color: var(--accent);
+  font-weight: 700;
+  user-select: none;
+}
 
-  font-size: 13px;
+.ssh-user {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.ssh-user-plain {
   color: var(--text-color);
-  text-decoration: none;
-
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.contact-bubbles a:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px var(--shadow);
+.ssh-cursor {
+  color: var(--accent);
+  animation: blink 1s step-end infinite;
+  font-size: 14px;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+/* ================================
+   CONNECTION STATUS
+================================ */
+
+.contact-connected {
+  margin-top: 10px;
+  font-size: 13px;
+  color: var(--muted-text);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.connected-check {
+  color: #28CA41;
+  font-size: 15px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+/* ================================
+   NUMBERED MENU
+================================ */
+
+.contact-menu {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.contact-menu-hint {
+  font-size: 11px;
+  color: var(--muted-text);
+  font-style: italic;
+  margin-bottom: 12px;
+  opacity: 0.7;
+}
+
+.contact-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 10px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--text-color);
+  border: 1px solid transparent;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.contact-menu-item:hover,
+.contact-menu-item.cm-hover {
+  background: rgba(91, 200, 245, 0.06);
+  border-color: rgba(91, 200, 245, 0.2);
+  color: #5BC8F5;
+}
+
+[data-theme="light"] .contact-menu-item:hover,
+[data-theme="light"] .contact-menu-item.cm-hover {
+  background: rgba(74, 157, 196, 0.07);
+  border-color: rgba(74, 157, 196, 0.3);
+  color: #4A9DC4;
+}
+
+.cm-key {
+  color: var(--accent);
+  font-weight: 700;
+  min-width: 28px;
+  font-size: 13px;
+}
+
+.cm-arrow {
+  color: var(--muted-text);
+  font-size: 12px;
+  opacity: 0.6;
+}
+
+.cm-label {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* ================================
+   ENTER ANIMATIONS
+================================ */
+
+.ct-fade {
+  animation: ctFade 0.4s ease both;
+}
+
+@keyframes ctFade {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.ct-slide-in {
+  animation: ctSlide 0.3s ease calc(var(--mi, 0) * 30ms) both;
+}
+
+@keyframes ctSlide {
+  from { opacity: 0; transform: translateX(-10px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* ================================
+   RESPONSIVE
+================================ */
+
+@media (max-width: 768px) {
+  .contact-terminal {
+    padding: 20px 18px;
+    font-size: 14px;
+  }
+
+  .cm-label {
+    font-size: 13px;
+  }
 }

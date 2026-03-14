@@ -1,180 +1,176 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Section from "../components/Section";
 import "../styles/Experience.css";
 
+const ROLES = [
+  {
+    key: "abs",
+    company: "Agile Business Solutions",
+    role: "Full Stack Developer Intern",
+    date: "Dec 2025 – Present",
+    location: "Massachusetts, United States",
+    bullets: [
+      "Designed event-driven, serverless microservices using Node.js and TypeScript",
+      "Built REST APIs with AWS Lambda, API Gateway, and EventBridge",
+      "Implemented multi-tenant authentication and RBAC using AWS Cognito",
+      "Developed custom Lambda authorizers and audit logging mechanisms",
+      "Integrated React micro-frontend applications with shared component libraries",
+      "Automated builds and deployments using CI/CD pipelines",
+    ],
+    tech: ["Node.js", "TypeScript", "AWS Lambda", "API Gateway", "EventBridge", "AWS Cognito", "React", "CI/CD"],
+  },
+  {
+    key: "as-sde",
+    company: "Agile Solutions",
+    role: "Software Development Engineer",
+    date: "May 2022 – Aug 2024",
+    location: "Bangalore, India",
+    bullets: [
+      "Developed secure, scalable features for a Tax Intelligence & Management Platform",
+      "Built enterprise-grade functionality serving global clients",
+      "Migrated platform from SAP XS Classic to XS Advanced architecture",
+      "Re-architected synchronous workflows into asynchronous services",
+      "Improved system throughput and responsiveness by approximately 35%",
+      "Automated CI/CD reporting using Python-based analytics",
+      "Enforced code quality and security using SonarQube and Node.js scanners",
+    ],
+    tech: ["JavaScript", "Python", "Node.js", "SAP XS Advanced", "SAP HANA", "SQL", "SonarQube", "CI/CD", "REST", "JSON"],
+  },
+  {
+    key: "as-intern",
+    company: "Agile Solutions",
+    role: "Intern Developer",
+    date: "May 2021 – Apr 2022",
+    location: "Bangalore, India",
+    bullets: [
+      "Fixed critical production bugs and performance bottlenecks",
+      "Implemented feature enhancements to improve platform turnaround time",
+      "Developed backend services using SAP XSJS and SAP HANA",
+      "Validated APIs and integrations using SOAP UI",
+      "Contributed frontend components using HTML, CSS, and JavaScript",
+    ],
+    tech: ["JavaScript", "SQL", "SAP XSJS", "SAP HANA", "SOAP UI", "HTML", "CSS"],
+  },
+  {
+    key: "epam",
+    company: "EPAM Systems",
+    role: "Software Engineering Trainee",
+    date: "Sep 2020 – May 2021",
+    location: "Hyderabad, India",
+    bullets: [
+      "Completed intensive training in Java and object-oriented programming",
+      "Practiced data structures and algorithmic problem solving",
+      "Built small-scale applications using clean code principles",
+      "Applied Agile workflows and Git-based version control",
+      "Collaborated in team-based engineering exercises",
+    ],
+    tech: ["Java", "OOP", "Data Structures", "Algorithms", "Git", "Agile"],
+  },
+  {
+    key: "ta",
+    company: "Teaching Assistant",
+    role: "University of KL",
+    date: "Dec 2019 – Mar 2021",
+    location: "Vijayawada, India",
+    bullets: [
+      "Assisted undergraduate courses in Cyber Security and Computer Networks",
+      "Designed lab tutorials, assignments, and instructional materials",
+      "Conducted tutorial sessions and concept walkthroughs",
+      "Mentored students through hands-on problem solving",
+    ],
+    tech: ["Cyber Security", "Computer Networks", "Teaching", "Curriculum Design", "Mentoring"],
+  },
+];
+
 const Experience = () => {
-  const [activeTab, setActiveTab] = useState("abs");
+  const [active, setActive] = useState("abs");
+  const [panelKey, setPanelKey] = useState(0);
+  const wrapperRef = useRef(null);
+  const [lineH, setLineH] = useState(0);
+
+  const switchTo = (key) => {
+    if (key === active) return;
+    setActive(key);
+    setPanelKey((k) => k + 1);
+  };
+
+  // Draw timeline line on reveal
+  useEffect(() => {
+    const el = wrapperRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) { setLineH(100); observer.disconnect(); }
+      },
+      { threshold: 0.15 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  const activeData = ROLES.find((r) => r.key === active);
 
   return (
     <Section id="experience">
-      <div className="experience-wrapper">
-        {/* Heading */}
+      <div className="experience-wrapper reveal" ref={wrapperRef}>
+        <span className="section-watermark" aria-hidden="true">02</span>
+
         <div className="experience-heading">
           <span className="experience-line" />
-          <h1 className="experience-title">Where I’ve Worked</h1>
-        </div>
-        <p className="experience-hint">Tap a company to view details</p>
-
-        {/* Tabs */}
-        <div className="experience-tabs">
-          <button className={activeTab === "abs" ? "active" : ""} onClick={() => setActiveTab("abs")}>
-            Agile Business Solutions
-          </button>
-          <button className={activeTab === "as-sde" ? "active" : ""} onClick={() => setActiveTab("as-sde")}>
-            Agile Solutions
-          </button>
-          <button className={activeTab === "as-intern" ? "active" : ""} onClick={() => setActiveTab("as-intern")}>
-            Agile Solutions (Intern)
-          </button>
-          <button className={activeTab === "epam" ? "active" : ""} onClick={() => setActiveTab("epam")}>
-            EPAM Systems
-          </button>
-          <button className={activeTab === "ta" ? "active" : ""} onClick={() => setActiveTab("ta")}>
-            Teaching Assistant
-          </button>
+          <h1 className="experience-title">Where I've Worked</h1>
         </div>
 
-        {/* Content */}
-        <div className="experience-body">
-          {/* LEFT */}
-          <div className="experience-content">
+        <div className="exp-split">
 
-            {activeTab === "abs" && (
-              <>
-                <p className="experience-role">
-                  Full Stack Developer Intern · Massachusetts, United States  
-                  <br />
-                  <span> Dec 2025 – Present </span>
-                </p>
+          {/* ── LEFT: vertical timeline ── */}
+          <div className="exp-tl">
+            <div className="tl-track" aria-hidden="true">
+              <div className="tl-track-fill" style={{ height: `${lineH}%` }} />
+            </div>
 
-                <ul className="experience-code">
-                  <li>Designed event-driven, serverless microservices using Node.js and TypeScript</li>
-                  <li>Built REST APIs with AWS Lambda, API Gateway, and EventBridge</li>
-                  <li>Implemented multi-tenant authentication and RBAC using AWS Cognito</li>
-                  <li>Developed custom Lambda authorizers and audit logging mechanisms</li>
-                  <li>Integrated React micro-frontend applications with shared component libraries</li>
-                  <li>Automated builds and deployments using CI/CD pipelines</li>
-                </ul>
-              </>
-            )}
-
-            {activeTab === "as-sde" && (
-              <>
-                <p className="experience-role">
-                  Software Development Engineer · Bangalore, India  
-                  <br />
-                  <span> May 2022 – Aug 2024 </span>
-                </p>
-
-                <ul className="experience-code">
-                  <li>Developed secure, scalable features for a Tax Intelligence & Management Platform</li>
-                  <li>Built enterprise-grade functionality serving global clients</li>
-                  <li>Migrated platform from SAP XS Classic to XS Advanced architecture</li>
-                  <li>Re-architected synchronous workflows into asynchronous services</li>
-                  <li>Improved system throughput and responsiveness by approximately 35%</li>
-                  <li>Automated CI/CD reporting using Python-based analytics</li>
-                  <li>Enforced code quality and security using SonarQube and Node.js scanners</li>
-                </ul>
-              </>
-            )}
-
-            {activeTab === "as-intern" && (
-              <>
-                <p className="experience-role">
-                  Intern Developer · Bangalore, India  
-                  <br />
-                  <span> May 2021 – Apr 2022 </span>
-                </p>
-
-                <ul className="experience-code">
-                  <li>Fixed critical production bugs and performance bottlenecks</li>
-                  <li>Implemented feature enhancements to improve platform turnaround time</li>
-                  <li>Developed backend services using SAP XSJS and SAP HANA</li>
-                  <li>Validated APIs and integrations using SOAP UI</li>
-                  <li>Contributed frontend components using HTML, CSS, and JavaScript</li>
-                </ul>
-              </>
-            )}
-
-            {activeTab === "epam" && (
-              <>
-                <p className="experience-role">
-                  Software Engineering Trainee · Hyderabad, India  
-                  <br />
-                  <span> Sep 2020 – May 2021 </span>
-                </p>
-
-                <ul className="experience-code">
-                  <li>Completed intensive training in Java and object-oriented programming</li>
-                  <li>Practiced data structures and algorithmic problem solving</li>
-                  <li>Built small-scale applications using clean code principles</li>
-                  <li>Applied Agile workflows and Git-based version control</li>
-                  <li>Collaborated in team-based engineering exercises</li>
-                </ul>
-              </>
-            )}
-
-            {activeTab === "ta" && (
-              <>
-                <p className="experience-role">
-                  Teaching Assistant · Vijayawada, India <br />  
-                  <span>Dec 2019 – Mar 2021 </span>
-                </p>
-
-                <ul className="experience-code">
-                  <li>Assisted undergraduate courses in Cyber Security and Computer Networks</li>
-                  <li>Designed lab tutorials, assignments, and instructional materials</li>
-                  <li>Conducted tutorial sessions and concept walkthroughs</li>
-                  <li>Mentored students through hands-on problem solving</li>
-                </ul>
-              </>
-            )}
-
+            {ROLES.map((r) => (
+              <button
+                key={r.key}
+                className={`tl-node${active === r.key ? " tl-node--active" : ""}`}
+                onClick={() => switchTo(r.key)}
+                aria-pressed={active === r.key}
+              >
+                <div className="tl-node-dot" aria-hidden="true" />
+                <div className="tl-node-info">
+                  <span className="tl-company">{r.company}</span>
+                  <span className="tl-role">{r.role}</span>
+                  <span className="tl-date">{r.date}</span>
+                </div>
+              </button>
+            ))}
           </div>
 
-          {/* RIGHT */}
-          <div className="experience-tech-panel">
-            {activeTab === "abs" && (
-              <div className="tech-bubbles">
-                <span>Node.js</span><span>TypeScript</span><span>AWS Lambda</span>
-                <span>API Gateway</span><span>EventBridge</span><span>AWS Cognito</span>
-                <span>React</span><span>CI/CD</span>
-              </div>
-            )}
+          {/* ── RIGHT: glassmorphism detail panel ── */}
+          <div key={panelKey} className="exp-panel">
+            <div className="exp-panel-scan" aria-hidden="true" />
 
-            {activeTab === "as-sde" && (
-              <div className="tech-bubbles">
-                <span>JavaScript</span><span>Python</span><span>Node.js</span>
-                <span>SAP XS Advanced</span><span>SAP HANA</span><span>SQL</span>
-                <span>SonarQube</span><span>CI/CD</span>
-                <span>REST</span>
-                <span>JSON</span>
-                <span>XML</span> 
-                <span>SOAP</span>
+            <div className="ep-header">
+              <div>
+                <h2 className="ep-company">{activeData.company}</h2>
+                <p className="ep-role">{activeData.role}</p>
               </div>
-            )}
+              <span className="ep-date">{activeData.date}</span>
+            </div>
+            <p className="ep-location">{activeData.location}</p>
 
-            {activeTab === "as-intern" && (
-              <div className="tech-bubbles">
-                <span>JavaScript</span><span>SQL</span><span>SAP XSJS</span>
-                <span>SAP HANA</span><span>SOAP UI</span><span>HTML</span><span>CSS</span>
-              </div>
-            )}
+            <ul className="ep-bullets">
+              {activeData.bullets.map((b, i) => (
+                <li key={i} style={{ "--bi": i }}>{b}</li>
+              ))}
+            </ul>
 
-            {activeTab === "epam" && (
-              <div className="tech-bubbles">
-                <span>Java</span><span>OOP</span><span>Data Structures</span>
-                <span>Algorithms</span><span>Git</span><span>Agile</span>
-              </div>
-            )}
-
-            {activeTab === "ta" && (
-              <div className="tech-bubbles">
-                <span>Cyber Security</span><span>Computer Networks</span>
-                <span>Teaching</span><span>Curriculum Design</span><span>Mentoring</span>
-              </div>
-            )}
+            <div className="ep-tech">
+              {activeData.tech.map((t, i) => (
+                <span key={t} style={{ "--ti": i }}>{t}</span>
+              ))}
+            </div>
           </div>
+
         </div>
       </div>
     </Section>

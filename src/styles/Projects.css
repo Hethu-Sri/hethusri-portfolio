@@ -1,3 +1,7 @@
+/* ================================
+   WRAPPER
+================================ */
+
 .project-wrapper {
   padding-top: 48px;
   margin-bottom: 200px;
@@ -31,47 +35,148 @@
   color: var(--muted-text);
 }
 
-/* ================================
-   PROJECT HEADER (TITLE + ICONS)
-================================ */
-
-.project-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 12px;
-
-  position: relative;
-  overflow: visible; /* ✅ CRITICAL */
-  z-index: 3;
-}
-
-.project-header h3 {
-  margin: 0;
-  font-size: 16px;
-  line-height: 1.3;
+.project-flip-hint {
+  font-style: italic;
+  opacity: 0.65;
+  font-size: 0.9em;
 }
 
 /* ================================
-   GRID
+   GRID — fixed row height for flip
 ================================ */
 
 .projects-grid {
   margin-top: 48px;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
-  gap: 24px;
+  grid-template-columns: repeat(auto-fit, minmax(440px, 1fr));
+  grid-auto-rows: 460px;
+  gap: 28px;
 }
 
 /* ================================
-   CARD
+   TILT WRAPPER
+   Outer layer: handles 3D perspective tilt via JS
+================================ */
+
+.card-tilt-wrapper {
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.15s ease-out;
+  will-change: transform;
+  border-radius: 20px;
+}
+
+/* ================================
+   PROJECT CARD
+   Middle layer: perspective for inner flip
 ================================ */
 
 .project-card {
+  height: 100%;
   position: relative;
   border-radius: 20px;
+  cursor: pointer;
+
+  /* perspective for the flip inside */
+  perspective: 1000px;
+  transform-style: preserve-3d;
+}
+
+/* ================================
+   CARD INNER — rotates on flip
+================================ */
+
+.card-inner {
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.85s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 20px;
+}
+
+.project-card.is-flipped .card-inner {
+  transform: rotateY(180deg);
+}
+
+/* ================================
+   SHARED FACE STYLES
+================================ */
+
+.card-front,
+.card-back {
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  overflow: hidden;
+
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* ================================
+   FRONT FACE
+================================ */
+
+.card-front {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 8px 28px var(--shadow);
+
   padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Dark mode front */
+[data-theme="dark"] .card-front {
+  background: rgba(15, 23, 42, 0.88);
+  border-color: rgba(91, 200, 245, 0.15);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Mouse-follow radial glow on front */
+.card-front::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    rgba(91, 200, 245, 0.15),
+    transparent 40%
+  );
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.card-tilt-wrapper:hover .card-front::before {
+  opacity: 1;
+}
+
+/* All direct children of card-front above the glow layer */
+.card-front > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Lift on hover via tilt — tilt handles this visually, but add a subtle border glow */
+[data-theme="dark"] .card-tilt-wrapper:hover .card-front {
+  border-color: rgba(91, 200, 245, 0.35);
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.55),
+    0 0 40px rgba(91, 200, 245, 0.08);
+}
+
+/* ================================
+   BACK FACE
+================================ */
+
+.card-back {
+  transform: rotateY(180deg);
 
   background: var(--card-bg);
   border: 1px solid var(--border-color);
@@ -80,231 +185,528 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-
-  min-height: 420px;
-  overflow: hidden;
-
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  padding: 28px;
 }
 
-/* mouse-follow gradient */
-.project-card::before {
+[data-theme="dark"] .card-back {
+  background: rgba(5, 10, 20, 0.97);
+  border-color: rgba(91, 200, 245, 0.4);
+  box-shadow:
+    0 0 0 1px rgba(91, 200, 245, 0.12),
+    0 30px 80px rgba(0, 0, 0, 0.8);
+}
+
+/* Ambient shimmer on back */
+.card-back::before {
   content: "";
   position: absolute;
   inset: 0;
-
-  background: radial-gradient(
-    600px circle at var(--mouse-x) var(--mouse-y),
-    rgba(127, 184, 214, 0.25),
-    transparent 40%
+  border-radius: inherit;
+  background: linear-gradient(
+    135deg,
+    rgba(91, 200, 245, 0.07) 0%,
+    transparent 55%
   );
-
-  opacity: 0;
-  transition: opacity 0.2s ease;
   pointer-events: none;
+  z-index: 0;
 }
 
-.project-card:hover::before {
-  opacity: 1;
-}
-
-.project-card:hover {
-  transform: translateY(-4px);
-}
-
-/* ================================
-   CONTENT
-================================ */
-
-.project-points {
-  margin-left: -20px;
-  font-size: 14px;
-  margin-bottom: 16px;
-  padding-right: 40px;
-  text-align: justify;
-}
-
-.project-points li {
-  margin-left: 20px;
-  margin-top: 2px;
-  font-size: 14px;
-  padding-right: 40px;
+/* All back content above shimmer */
+.card-back > * {
+  position: relative;
+  z-index: 1;
 }
 
 /* ================================
-   TECH BUBBLES
+   BACK FACE CONTENT
 ================================ */
 
-.project-meta {
+.card-back-num {
+  position: absolute;
+  bottom: -15px;
+  right: 12px;
+  font-size: 120px;
+  font-weight: 900;
+  line-height: 1;
+  color: var(--accent);
+  opacity: 0.05;
+  user-select: none;
+  pointer-events: none;
+  font-family: "Courier Prime", monospace;
+  letter-spacing: -3px;
+  z-index: 0;
+}
+
+[data-theme="dark"] .card-back-num {
+  opacity: 0.08;
+}
+
+.card-back-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: 1;
+}
+
+.card-back-title {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.3;
+  margin: 0;
+  color: var(--text-color);
+}
+
+[data-theme="dark"] .card-back-title {
+  color: #e8f4fd;
+}
+
+.card-back-desc {
+  font-size: 13.5px;
+  line-height: 1.7;
+  color: var(--muted-text);
+  margin: 0;
+  padding: 0;
+  max-width: 100%;
+}
+
+[data-theme="dark"] .card-back-desc {
+  color: rgba(155, 203, 229, 0.85);
+}
+
+.card-back-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 16px;
+  gap: 7px;
+  margin-top: 4px;
 }
 
-.project-meta span {
+.card-back-tags span {
   font-size: 11px;
-  padding: 6px 12px;
+  padding: 4px 11px;
   border-radius: 999px;
   border: 1px solid var(--border-color);
   color: var(--text-color);
   white-space: nowrap;
 }
 
+[data-theme="dark"] .card-back-tags span {
+  border-color: rgba(91, 200, 245, 0.25);
+  color: rgba(91, 200, 245, 0.8);
+}
+
 /* ================================
-   PROJECT ICON LINKS
+   BACK CTA LINKS
+================================ */
+
+.card-back-links {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: auto;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+  text-decoration: none;
+  font-size: 13px;
+  font-family: "Courier Prime", monospace;
+  transition: all 0.2s ease;
+  padding-left: 20px;
+}
+
+.back-link:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  opacity: 1;
+}
+
+[data-theme="dark"] .back-link:hover {
+  box-shadow: 0 0 20px rgba(91, 200, 245, 0.2);
+}
+
+.back-link-primary {
+  background: rgba(91, 200, 245, 0.1);
+  border-color: rgba(91, 200, 245, 0.5);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.back-link-primary:hover {
+  background: rgba(91, 200, 245, 0.18);
+  color: var(--accent);
+}
+
+[data-theme="dark"] .back-link-primary:hover {
+  box-shadow: 0 0 28px rgba(91, 200, 245, 0.3);
+}
+
+/* ================================
+   FLIP HINTS
+================================ */
+
+.flip-hint {
+  font-size: 11px;
+  color: var(--muted-text);
+  opacity: 0.4;
+  letter-spacing: 0.8px;
+  text-align: right;
+  padding: 0;
+  margin: 0;
+  padding-left: 0;
+  font-style: italic;
+  transition: opacity 0.2s ease;
+}
+
+.card-tilt-wrapper:hover .flip-hint {
+  opacity: 0.8;
+}
+
+.flip-hint-back {
+  font-size: 11px;
+  color: var(--muted-text);
+  opacity: 0.45;
+  letter-spacing: 0.8px;
+  font-style: italic;
+  padding: 0;
+  margin: 0;
+  padding-left: 0;
+  text-align: right;
+}
+
+/* ================================
+   CARD NUMBER WATERMARK
+================================ */
+
+.card-num {
+  position: absolute;
+  top: -16px;
+  right: 10px;
+  font-size: 110px;
+  font-weight: 900;
+  line-height: 1;
+  color: var(--accent);
+  opacity: 0.04;
+  user-select: none;
+  pointer-events: none;
+  font-family: "Courier Prime", monospace;
+  letter-spacing: -3px;
+  z-index: 0;
+}
+
+[data-theme="dark"] .card-num {
+  opacity: 0.07;
+}
+
+/* ================================
+   PROJECT HEADER
+================================ */
+
+.project-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+  z-index: 2;
+  position: relative;
+}
+
+.project-header h3 {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.35;
+}
+
+/* ================================
+   DESCRIPTION BULLETS
+================================ */
+
+.project-points {
+  margin-left: -20px;
+  font-size: 13.5px;
+  margin-bottom: 16px;
+  padding-right: 16px;
+  text-align: left;
+}
+
+.project-points li {
+  margin-left: 20px;
+  margin-top: 4px;
+  font-size: 13.5px;
+  padding-right: 8px;
+  line-height: 1.55;
+}
+
+/* ================================
+   TECH TAG BUBBLES
+================================ */
+
+.project-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-bottom: 8px;
+}
+
+.project-meta span {
+  font-size: 11px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+  white-space: nowrap;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+[data-theme="dark"] .project-meta span {
+  border-color: rgba(91, 200, 245, 0.2);
+  color: rgba(155, 203, 229, 0.7);
+}
+
+/* ================================
+   PROJECT LINK BUTTONS (ICON)
 ================================ */
 
 .project-links {
   display: flex;
-  gap: 10px;
+  gap: 8px;
+  flex-shrink: 0;
 }
 
-/* Icon button */
-.icon-btn {
-  position: relative;
+.project-links a {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-
-  width: 28px;
-  height: 28px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   border: 1px solid var(--border-color);
-
   color: var(--text-color);
-  opacity: 0.75;
-
-  transition: opacity 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  opacity: 0.7;
+  text-decoration: none;
+  padding-left: 0;
+  transition: opacity 0.2s ease, transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.icon-btn:hover {
+.project-links a:hover {
   opacity: 1;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px var(--shadow);
+}
+
+[data-theme="dark"] .project-links a {
+  border-color: rgba(91, 200, 245, 0.3);
+}
+
+[data-theme="dark"] .project-links a:hover {
+  border-color: rgba(91, 200, 245, 0.7);
+  box-shadow: 0 0 14px rgba(91, 200, 245, 0.3);
 }
 
 /* ================================
-   TOOLTIP (ESCAPES CARD)
-================================ */
-
-.icon-btn::after {
-  content: attr(data-tooltip);
-  position: absolute;
-  bottom: calc(100% + 10px);
-  left: 50%;
-  transform: translateX(-50%) translateY(4px);
-
-  background: #0b1220;
-  color: #9bcbe5;
-
-  font-size: 11px;
-  padding: 6px 10px;
-  border-radius: 6px;
-  white-space: nowrap;
-
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.15s ease, transform 0.15s ease;
-
-  z-index: 9999;
-}
-
-/* Tooltip arrow */
-.icon-btn::before {
-  content: "";
-  position: absolute;
-  bottom: calc(100% + 4px);
-  left: 50%;
-  transform: translateX(-50%);
-
-  border-width: 6px;
-  border-style: solid;
-  border-color: #0b1220 transparent transparent transparent;
-
-  opacity: 0;
-  transition: opacity 0.15s ease;
-
-  z-index: 9999;
-}
-
-/* Show tooltip */
-.icon-btn:hover::after,
-.icon-btn:hover::before {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0);
-}
-
-/* ================================
-   MOBILE COMPACT CARD SPACING
+   MOBILE
 ================================ */
 
 @media (max-width: 768px) {
+  .projects-grid {
+    grid-template-columns: 1fr;
+    grid-auto-rows: auto;
+    gap: 20px;
+  }
 
-  /* Card container */
+  .card-tilt-wrapper {
+    height: auto;
+    min-height: 400px;
+    /* disable 3D tilt on touch devices */
+    transform: none !important;
+    transition: none;
+  }
+
   .project-card {
-    padding: 14px;          /* ↓ from 20px */
-    min-height: unset;      /* let content define height */
+    height: auto;
+    min-height: 400px;
   }
 
-  /* Project title */
+  .card-inner {
+    height: auto;
+    min-height: 400px;
+  }
+
+  /* On mobile, flip shows a simpler transition */
+  .card-front,
+  .card-back {
+    position: relative;
+    inset: unset;
+    height: auto;
+    min-height: 380px;
+  }
+
+  .card-back {
+    display: none;
+  }
+
+  .project-card.is-flipped .card-inner {
+    transform: none;
+  }
+
+  .project-card.is-flipped .card-front {
+    display: none;
+  }
+
+  .project-card.is-flipped .card-back {
+    display: flex;
+  }
+
+  .flip-hint,
+  .flip-hint-back {
+    display: none;
+  }
+
+  .project-flip-hint {
+    display: none;
+  }
+
+  .card-front {
+    padding: 16px;
+  }
+
   .project-header h3 {
-    font-size: 15px;
-    line-height: 1.25;
-    margin-bottom: 8px;
-  }
-
-  /* Description + bullets wrapper */
-  .project-points {
-    margin-left: -14px;     /* align with reduced padding */
-    padding-right: 14px;
     font-size: 14px;
-    line-height: 1.5;       /* ↓ tighter text */
-    margin-bottom: 10px;
   }
 
-  /* Bullet items */
+  .project-points,
   .project-points li {
-    margin-left: 12px;
-    line-height: 1.45;
-    padding-right: 12px;
-  }
-
-  /* Tech stack bubbles */
-  .project-meta {
-    gap: 6px;
-    margin-bottom: 10px;
+    font-size: 13px;
+    text-align: left;
+    word-spacing: normal;
+    padding-right: 8px;
   }
 
   .project-meta span {
     font-size: 10px;
-    padding: 4px 10px;      /* smaller pills */
-  }
-
-  /* Header spacing */
-  .project-header {
-    margin-bottom: 8px;
+    padding: 4px 10px;
   }
 }
+
+@media (hover: none) {
+  .card-front::before {
+    display: none;
+  }
+}
+
 /* ================================
-   MOBILE TEXT FIX (IMPORTANT)
+   BACK FACE — CONTENT REVEAL
+   Stagger content in after flip completes (~0.85s)
 ================================ */
 
-@media (max-width: 768px) {
+.project-card.is-flipped .card-back-title {
+  animation: backItemIn 0.45s cubic-bezier(0.4, 0, 0.2, 1) 0.5s both;
+}
 
-  /* Fix ugly word spacing caused by justify + monospace */
-  .project-points,
-  .project-points li {
-    color: color-mix(in srgb, var(--text-color) 80%, transparent);
-    font-size: 13px;
-    text-align: left;          
-    word-spacing: normal;      
-    letter-spacing: 0;         
-    line-height: 1.5;          
+.project-card.is-flipped .card-back-desc {
+  animation: backItemIn 0.45s cubic-bezier(0.4, 0, 0.2, 1) 0.62s both;
+}
+
+.project-card.is-flipped .card-back-tags {
+  animation: backItemIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) 0.73s both;
+}
+
+.project-card.is-flipped .card-back-links {
+  animation: backItemIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) 0.84s both;
+}
+
+.project-card.is-flipped .flip-hint-back {
+  animation: backItemIn 0.35s ease 0.95s both;
+}
+
+@keyframes backItemIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
   }
-
-  .project-points li {
-    margin-top: 4px;
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
+/* ================================
+   SCAN LINE — sweeps down back face
+================================ */
+
+.card-back::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(91, 200, 245, 0.35) 35%,
+    rgba(91, 200, 245, 0.55) 50%,
+    rgba(91, 200, 245, 0.35) 65%,
+    transparent 100%
+  );
+  top: 0%;
+  pointer-events: none;
+  z-index: 4;
+  opacity: 0;
+  animation: none;
+}
+
+.project-card.is-flipped .card-back::after {
+  animation: scanLine 4s linear infinite;
+  animation-delay: 0.85s;
+}
+
+@keyframes scanLine {
+  0%   { top: 0%;   opacity: 0; }
+  4%   { opacity: 1; }
+  96%  { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+
+/* ================================
+   BACK BORDER GLOW PULSE
+================================ */
+
+@keyframes backGlowPulse {
+  0%, 100% {
+    box-shadow:
+      0 0 0 1px rgba(91, 200, 245, 0.12),
+      0 30px 80px rgba(0, 0, 0, 0.8);
+  }
+  50% {
+    box-shadow:
+      0 0 0 1px rgba(91, 200, 245, 0.4),
+      0 0 35px rgba(91, 200, 245, 0.15),
+      0 30px 80px rgba(0, 0, 0, 0.8);
+  }
+}
+
+[data-theme="dark"] .project-card.is-flipped .card-back {
+  animation: backGlowPulse 2.8s ease-in-out infinite;
+  animation-delay: 0.9s;
+}
+
+/* ================================
+   FLIP ARROW — pulse hint
+================================ */
+
+@keyframes arrowPulse {
+  0%, 100% { opacity: 0.4; transform: rotate(0deg)  scale(1);   }
+  50%       { opacity: 0.9; transform: rotate(-12deg) scale(1.15); }
+}
+
+.flip-hint-front .flip-arrow,
+.card-tilt-wrapper .flip-hint .arrow {
+  display: inline-block;
+  animation: arrowPulse 2.2s ease-in-out infinite;
+}

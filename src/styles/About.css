@@ -1,154 +1,521 @@
 /* ================================
-   PAGE STRUCTURE
+   PAGE WRAPPER
 ================================ */
 
 .about-page {
-    padding-top: 48px;
-    margin-bottom: 240px;
-  }
+  padding-top: 48px;
+  margin-bottom: 240px;
+}
 
 .about-title {
-    font-size: 40px;
-    font-weight: 700;
-    margin-bottom: 32px;
+  font-size: 40px;
+  font-weight: 700;
+  margin-bottom: 0;
 }
-  
-  /* ================================
-     TWO-COLUMN LAYOUT
-  ================================ */
-  
-  .about-layout {
-    display: grid;
-    grid-template-columns: 1.4fr 0.6fr;
-    gap: 64px;
-    align-items: start;
-  }
-  
-  /* ================================
-     EDITORIAL TEXT
-  ================================ */
-  
-  .about-editorial {
-    max-width: 900px;
-  }
-  
-  .about-editorial h2 {
-    margin-bottom: 24px;
-    text-align: left;
-  }
-  
-  .about-editorial p {
-    margin-bottom: 18px;
-    text-align: justify;
-  }
 
-  /* .about-divider {
-    width: 48px;
-    height: 2px;
-    margin: 12px 0 32px 10px;
-  
-    background-color: var(--border-color);
-    opacity: 0.6;
-  } */
-  .about-heading {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  
-  .about-line {
-    width: 4px;
-    height: 32px;
-    background-color: var(--border-color);
-    opacity: 0.4;
-  }
-  
-  
-  /* ================================
-   ABOUT PHOTO — SIGNATURE CARD
+.about-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.about-line {
+  width: 4px;
+  height: 32px;
+  background-color: var(--border-color);
+  opacity: 0.4;
+}
+
+/* ================================
+   TWO-COLUMN SPLIT  40% | 60%
 ================================ */
 
-.about-photo-card {
-    margin-top: 130px;
-    position: relative;
-    width: 100%;
-    max-width: 320px;
+.about-split {
+  display: grid;
+  grid-template-columns: 40% 60%;
+  gap: 20px;
+  align-items: stretch;  /* Changed from 'start' */
+}
+
+/* ================================
+   SHARED CARD BASE — glassmorphism
+   NOTE: overflow is intentionally NOT set here.
+   photo-tilt-wrap needs overflow:visible for 3D children.
+   about-bio-card sets its own overflow:hidden.
+================================ */
+
+.about-card {
+  border-radius: 20px;
+  border: 1px solid var(--border-color);
+  background: var(--card-bg);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.about-page.revealed .about-card {
+  animation: aboutCardIn 0.6s cubic-bezier(0.22, 1, 0.36, 1)
+    calc(var(--card-i, 0) * 120ms) forwards;
+}
+
+@keyframes aboutCardIn {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+[data-theme="dark"] .about-card {
+  background: rgba(8, 13, 24, 0.78);
+  border-color: rgba(91, 200, 245, 0.12);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(91, 200, 245, 0.05);
+}
+
+[data-theme="dark"] .about-card:hover {
+  border-color: rgba(91, 200, 245, 0.26);
+  box-shadow:
+    0 12px 44px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(91, 200, 245, 0.1),
+    0 0 40px rgba(91, 200, 245, 0.05);
+}
+
+[data-theme="light"] .about-card {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.07);
+}
+
+[data-theme="light"] .about-card:hover {
+  border-color: rgba(74, 157, 196, 0.38);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* ================================
+   PHOTO CARD — TILT WRAPPER
+================================ */
+
+.photo-tilt-wrap {
+  position: relative;
+  min-height: 660px;
+  cursor: pointer;
+  will-change: transform;
+}
+
+/* ── Inner clip frame — clips image/overlays at Z=0 ──
+   overflow:hidden is fine here because photo-frame itself
+   doesn't need preserve-3d; the image lives flat inside it. */
+.photo-frame {
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.photo-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  filter: saturate(0.92) contrast(1.0);
+  transition: filter 0.5s ease;
+}
+
+.photo-tilt-wrap:hover .photo-img {
+  filter: grayscale(1) contrast(1.08) brightness(0.88);
+}
+
+/* ── Cyan duotone overlay ── */
+.photo-duotone {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    145deg,
+    rgba(91, 200, 245, 0.6) 0%,
+    rgba(8, 20, 55, 0.5) 100%
+  );
+  mix-blend-mode: color;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+}
+
+.photo-tilt-wrap:hover .photo-duotone {
+  opacity: 1;
+}
+
+/* ── Specular highlight — radial gradient updated by JS on mousemove ── */
+.photo-specular {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+  z-index: 2;
+  /* background set by JS */
+}
+
+/* ── AR scan line ── */
+.photo-scan {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(91, 200, 245, 0.09) 50%,
+    transparent 100%
+  );
+  background-size: 100% 90px;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-90px);
+}
+
+.photo-tilt-wrap:hover .photo-scan {
+  opacity: 1;
+  animation: photoScan 2s linear infinite;
+}
+
+@keyframes photoScan {
+  0%   { transform: translateY(-90px); }
+  100% { transform: translateY(110%);  }
+}
+
+/* ── AR corner brackets (inside photo-frame, on photo surface) ── */
+.ar-corner {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  opacity: 0;
+  transition: opacity 0.3s ease 0.05s;
+  pointer-events: none;
+}
+
+.photo-tilt-wrap:hover .ar-corner { opacity: 1; }
+
+.ar-tl {
+  top: 16px; left: 16px;
+  border-top:  2px solid rgba(91, 200, 245, 0.85);
+  border-left: 2px solid rgba(91, 200, 245, 0.85);
+  border-radius: 3px 0 0 0;
+}
+
+.ar-br {
+  bottom: 16px; right: 16px;
+  border-bottom: 2px solid rgba(91, 200, 245, 0.85);
+  border-right:  2px solid rgba(91, 200, 245, 0.85);
+  border-radius: 0 0 3px 0;
+}
+
+/* ================================
+   AR DATA LABELS — floating at Z depth
+   These live OUTSIDE .photo-frame so they participate
+   in the preserve-3d context of .photo-tilt-wrap.
+   translateZ(var(--z)) lifts them in front of the photo
+   surface; their apparent parallax increases as the card tilts.
+================================ */
+
+.ar-labels {
+  position: absolute;
+  bottom: 96px;    /* sit above the stat shelf */
+  left: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  pointer-events: none;
+}
+
+.ar-label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 12px 5px 8px;
+  border-radius: 8px;
+  background: rgba(5, 12, 30, 0.72);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(91, 200, 245, 0.3);
+  width: fit-content;
+
+  transform: translateX(-12px);
+  opacity: 0;
+  transition:
+    opacity   0.28s ease calc(var(--li, 0) * 75ms + 0.08s),
+    transform 0.28s ease calc(var(--li, 0) * 75ms + 0.08s);
+}
+
+.photo-tilt-wrap:hover .ar-label {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.ar-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: #5BC8F5;
+  box-shadow: 0 0 6px rgba(91, 200, 245, 0.9);
+  flex-shrink: 0;
+}
+
+.ar-key {
+  font-size: 10px;
+  font-family: "Courier Prime", monospace;
+  font-weight: 700;
+  color: #5BC8F5;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+}
+
+.ar-sep {
+  color: rgba(91, 200, 245, 0.45);
+  font-size: 11px;
+}
+
+.ar-val {
+  font-size: 12px;
+  color: rgba(220, 235, 245, 0.92);
+  font-weight: 500;
+  letter-spacing: 0.2px;
+}
+
+/* ================================
+   STAT PILLS SHELF
+   Slight Z elevation so it rises with the tilt
+================================ */
+
+.stat-pills-shelf {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  gap: 0;
+  padding: 14px 16px 16px;
+  background: rgba(5, 10, 25, 0.68);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-top: 1px solid rgba(91, 200, 245, 0.18);
+  border-radius: 0 0 20px 20px;
+
+  /* Lift slightly above photo surface */
+  transform: translateZ(8px);
+}
+
+[data-theme="light"] .stat-pills-shelf {
+  background: rgba(230, 238, 246, 0.82);
+  border-top-color: rgba(74, 157, 196, 0.2);
+}
+
+.stat-pill {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 8px 6px;
+  border-radius: 10px;
+  position: relative;
+
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+.stat-pill + .stat-pill::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 10%; bottom: 10%;
+  width: 1px;
+  background: rgba(91, 200, 245, 0.15);
+}
+
+[data-theme="light"] .stat-pill + .stat-pill::before {
+  background: rgba(74, 157, 196, 0.15);
+}
+
+.about-page.revealed .stat-pill {
+  animation: pillIn 0.45s ease calc(var(--pi, 0) * 100ms + 0.35s) forwards;
+}
+
+@keyframes pillIn {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.stat-pill-num {
+  font-size: 26px;
+  font-weight: 700;
+  font-family: "Courier Prime", monospace;
+  line-height: 1;
+  color: #5BC8F5;
+  text-shadow: 0 0 16px rgba(91, 200, 245, 0.5);
+  letter-spacing: -0.5px;
+}
+
+[data-theme="light"] .stat-pill-num {
+  color: #2a85b8;
+  text-shadow: none;
+}
+
+.stat-pill-label {
+  font-size: 10px;
+  color: rgba(155, 203, 229, 0.7);
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  font-family: "Courier Prime", monospace;
+  white-space: nowrap;
+}
+
+[data-theme="light"] .stat-pill-label {
+  color: var(--muted-text);
+}
+
+/* ================================
+   BIO CARD (RIGHT)
+================================ */
+
+.about-bio-card {
+  padding: 36px 38px 32px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;   /* bio card clips normally — no 3D needed */
+}
+
+.bio-file-tag {
+  display: block;
+  font-size: 11px;
+  font-family: "Courier Prime", monospace;
+  font-style: italic;
+  color: var(--muted-text);
+  opacity: 0.6;
+  letter-spacing: 0.4px;
+  margin-bottom: 28px;
+}
+
+/* Paragraphs: left cyan border like a code block quote */
+.bio-para {
+  position: relative;
+  padding-left: 16px;
+  margin: 0 0 20px;
+  font-size: 14.5px;
+  line-height: 1.78;
+  color: var(--text-color);
+  opacity: 0.9;
+  border-left: 2px solid rgba(91, 200, 245, 0.28);
+  transition: border-color 0.2s ease;
+}
+
+.about-bio-card:hover .bio-para {
+  border-left-color: rgba(91, 200, 245, 0.52);
+}
+
+[data-theme="light"] .bio-para {
+  border-left-color: rgba(74, 157, 196, 0.28);
+}
+
+[data-theme="light"] .about-bio-card:hover .bio-para {
+  border-left-color: rgba(74, 157, 196, 0.5);
+}
+
+.bio-para:last-of-type { margin-bottom: 0; }
+
+/* ── Terminal status line ── */
+.bio-terminal {
+  padding-top: 24px;
+  margin-top: 24px;
+  border-top: 1px solid var(--border-color);
+  font-family: "Courier Prime", monospace;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+}
+
+[data-theme="dark"] .bio-terminal {
+  border-top-color: rgba(91, 200, 245, 0.1);
+}
+
+.bt-dollar { color: var(--muted-text); margin-right: 6px; }
+.bt-cmd    { color: var(--text-color); font-weight: 600; }
+.bt-colon  { color: var(--muted-text); margin-right: 6px; }
+
+.bt-val {
+  color: #28CA41;
+  font-weight: 600;
+}
+
+[data-theme="dark"] .bt-val {
+  text-shadow: 0 0 12px rgba(40, 202, 65, 0.5);
+}
+
+.bt-cursor {
+  color: #28CA41;
+  margin-left: 2px;
+  animation: btBlink 1s step-end infinite;
+}
+
+@keyframes btBlink {
+  50% { opacity: 0; }
+}
+
+/* ================================
+   REDUCED MOTION
+================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .about-page.revealed .about-card,
+  .about-page.revealed .stat-pill {
+    animation: none;
+    opacity: 1;
+    transform: none;
   }
-  
-  /* Offset border layer */
-  .about-photo-card::before {
-    padding-top: 48px;
-    content: "";
-    position: absolute;
-    inset: -10px 10px 10px -10px;
-  
-    border-radius: 22px;
-    border: 1px solid var(--border-color);
-  
-    opacity: 0.35;
-    pointer-events: none;
+  .photo-tilt-wrap:hover .photo-scan { animation: none; }
+  .bt-cursor { animation: none; }
+  /* Disable tilt spring-back override */
+  .photo-tilt-wrap {
+    transition: none !important;
+    transform: none !important;
   }
-  
-  /* Main frame */
-  .about-photo-frame {
-    position: relative;
-    overflow: hidden;
-  
-    border-radius: 20px;
-    background: var(--card-bg);
-  
-    box-shadow: 0 12px 28px var(--shadow);
-    transition:
-      transform 0.25s ease,
-      box-shadow 0.25s ease;
+}
+
+/* ================================
+   RESPONSIVE — tablet
+================================ */
+
+@media (max-width: 900px) {
+  .about-split {
+    grid-template-columns: 1fr;
+    gap: 16px;
   }
-  
-  /* Image */
-  .about-photo-frame img {
-    display: block;
-    width: 100%;
-    height: auto;
-  
-    object-fit: cover;
-    filter: saturate(0.95) contrast(0.98);
+
+  .photo-tilt-wrap {
+    min-height: 420px;
+    /* Disable tilt on touch/narrow viewports */
+    transform: none !important;
+    transition: none !important;
+    transform-style: flat;
   }
-  
-  /* ================================
-     HOVER (DESKTOP ONLY)
-  ================================ */
-  
-  @media (hover: hover) {
-    .about-photo-frame:hover {
-      transform: translateY(-4px) rotate(-0.5deg);
-      box-shadow: 0 18px 42px rgba(0, 0, 0, 0.25);
-    }
+
+  .photo-frame {
+    min-height: 420px;
   }
-  
-  /* ================================
-     DARK MODE TUNING
-  ================================ */
-  
-  [data-theme="dark"] .about-photo-frame img {
-    filter: brightness(0.95) saturate(0.9);
+
+  .ar-labels { bottom: 90px; }
+}
+
+/* ================================
+   RESPONSIVE — mobile
+================================ */
+
+@media (max-width: 640px) {
+  .photo-tilt-wrap,
+  .photo-frame {
+    min-height: 340px;
   }
-  
-  
-  /* ================================
-     RESPONSIVE
-  ================================ */
-  
-  @media (max-width: 900px) {
-    .about-layout {
-      grid-template-columns: 1fr;
-      gap: 40px;
-    }
-  
-    .about-photo {
-      justify-content: flex-start;
-    }
-  
-    .about-photo img {
-      max-width: 260px;
-    }
+
+  .about-bio-card {
+    padding: 24px 20px 22px;
   }
-  
+
+  .bio-para { font-size: 14px; }
+  .about-title { font-size: 32px; }
+  .stat-pill-num { font-size: 22px; }
+  .ar-labels { bottom: 82px; }
+}

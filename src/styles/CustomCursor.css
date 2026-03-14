@@ -1,0 +1,95 @@
+/* ================================
+   CUSTOM CURSOR
+   Desktop / hover-capable devices only
+================================ */
+
+@media (hover: hover) {
+  *, *::before, *::after {
+    cursor: none !important;
+  }
+}
+
+/* ── Dot (follows instantly) ── */
+.c-dot {
+  position: fixed;
+  top:  0;
+  left: 0;
+  width:  7px;
+  height: 7px;
+  margin-top:  -3.5px;
+  margin-left: -3.5px;
+
+  border-radius: 50%;
+  background: #5BC8F5;
+  box-shadow: 0 0 8px rgba(91, 200, 245, 0.9);
+
+  pointer-events: none;
+  z-index: 99999;
+  will-change: transform;
+
+  transition:
+    width  0.15s ease,
+    height 0.15s ease,
+    margin 0.15s ease,
+    background  0.15s ease,
+    box-shadow  0.15s ease;
+}
+
+/* ── Ring (lerp-lags behind) ── */
+.c-ring {
+  position: fixed;
+  top:  0;
+  left: 0;
+  width:  38px;
+  height: 38px;
+  margin-top:  -19px;
+  margin-left: -19px;
+
+  border-radius: 50%;
+  border: 1.5px solid rgba(91, 200, 245, 0.5);
+
+  pointer-events: none;
+  z-index: 99998;
+  will-change: transform;
+
+  transition:
+    width  0.28s cubic-bezier(0.4, 0, 0.2, 1),
+    height 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+    margin 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.28s ease,
+    background   0.28s ease;
+}
+
+/* Hover over interactive element — ring expands + fills */
+.c-ring.ring-hover {
+  width:  60px;
+  height: 60px;
+  margin-top:  -30px;
+  margin-left: -30px;
+  border-color: rgba(91, 200, 245, 0.9);
+  background: rgba(91, 200, 245, 0.07);
+}
+
+/* Click — compress both */
+.c-dot.dot-click {
+  width:  10px;
+  height: 10px;
+  margin-top:  -5px;
+  margin-left: -5px;
+  background: #ffffff;
+  box-shadow: 0 0 16px rgba(91, 200, 245, 1);
+}
+
+.c-ring.ring-click {
+  width:  22px;
+  height: 22px;
+  margin-top:  -11px;
+  margin-left: -11px;
+  border-color: rgba(91, 200, 245, 1);
+  background: rgba(91, 200, 245, 0.18);
+}
+
+/* Hide on touch/pen devices */
+@media (hover: none) {
+  .c-dot, .c-ring { display: none; }
+}
