@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import Section from "../components/Section";
+import TypedHeading from "../components/TypedHeading";
 import "../styles/Contact.css";
 
 const MENU = [
@@ -90,7 +91,7 @@ const Contact = () => {
         {/* Heading */}
         <div className="contact-heading">
           <span className="contact-line" />
-          <h1 className="contact-title">Get in Touch</h1>
+          <TypedHeading text="Get in Touch" className="contact-title" />
         </div>
 
         {/* Terminal block */}

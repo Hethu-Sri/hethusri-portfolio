@@ -89,6 +89,31 @@
   background: rgba(91, 200, 245, 0.18);
 }
 
+/* Light mode — use sidebar active tab color (#0B1220) */
+[data-theme="light"] .c-dot {
+  background: #0B1220;
+  box-shadow: 0 0 8px rgba(11, 18, 32, 0.5);
+}
+
+[data-theme="light"] .c-ring {
+  border-color: rgba(11, 18, 32, 0.35);
+}
+
+[data-theme="light"] .c-ring.ring-hover {
+  border-color: rgba(11, 18, 32, 0.7);
+  background: rgba(11, 18, 32, 0.05);
+}
+
+[data-theme="light"] .c-dot.dot-click {
+  background: #0B1220;
+  box-shadow: 0 0 16px rgba(11, 18, 32, 0.8);
+}
+
+[data-theme="light"] .c-ring.ring-click {
+  border-color: rgba(11, 18, 32, 0.9);
+  background: rgba(11, 18, 32, 0.1);
+}
+
 /* Hide on touch/pen devices */
 @media (hover: none) {
   .c-dot, .c-ring { display: none; }

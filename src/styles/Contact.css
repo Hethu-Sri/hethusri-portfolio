@@ -33,8 +33,7 @@
   margin-top: 40px;
   font-family: "Courier Prime", monospace;
   font-size: 15px;
-  max-width: 600px;
-  padding: 28px 32px;
+  padding: 28px 36px;
   border-radius: 14px;
   border: 1px solid var(--border-color);
   background: var(--card-bg);
@@ -48,6 +47,25 @@
     0 12px 40px rgba(0, 0, 0, 0.5),
     0 0 0 1px rgba(91, 200, 245, 0.06),
     0 0 60px rgba(91, 200, 245, 0.04);
+}
+
+[data-theme="light"] .contact-terminal {
+  background: rgba(240, 248, 255, 0.95);
+  border-color: rgba(74, 157, 196, 0.3);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .ssh-dollar,
+[data-theme="light"] .ssh-user {
+  color: #2a7a9e;
+}
+
+[data-theme="light"] .ssh-cursor {
+  color: #2a7a9e;
+}
+
+[data-theme="light"] .ssh-user-plain {
+  color: var(--text-color);
 }
 
 /* ================================
@@ -111,16 +129,17 @@
 
 .contact-menu {
   margin-top: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px 16px;
 }
 
 .contact-menu-hint {
+  grid-column: 1 / -1;
   font-size: 11px;
   color: var(--muted-text);
   font-style: italic;
-  margin-bottom: 12px;
+  margin-bottom: 4px;
   opacity: 0.7;
 }
 
@@ -198,9 +217,21 @@
   .contact-terminal {
     padding: 20px 18px;
     font-size: 14px;
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .contact-menu {
+    grid-template-columns: 1fr;
   }
 
   .cm-label {
     font-size: 13px;
+  }
+
+  /* Tappable contact menu items */
+  .contact-menu-item {
+    min-height: 44px;
+    padding: 10px 12px;
   }
 }

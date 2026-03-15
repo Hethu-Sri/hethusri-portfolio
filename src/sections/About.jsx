@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import Section from "../components/Section";
+import TypedHeading from "../components/TypedHeading";
 import "../styles/About.css";
 
 const STATS = [
-  { value: 4,  suffix: "+", label: "Years Exp." },
-  { value: 10, suffix: "+", label: "Projects"   },
+  { value: 3,  suffix: "+", label: "Years Exp." },
+  // { value: 10, suffix: "+", label: "Projects"   },
+  { value: 1000, suffix: "+", label: "Commits" },
   { value: 2,  suffix: "",  label: "Countries"  },
 ];
 
@@ -12,8 +14,8 @@ const STATS = [
 const AR_LABELS = [
   { key: "Location", val: "Cincinnati, OH", z: 20 },
   { key: "Status",   val: "Open to Work",   z: 35 },
-  { key: "Stack",    val: "Full-Stack",      z: 50 },
-];
+  { key: "Focus", val: "Full-Stack Development", z: 50 }
+]
 
 const MAX_TILT = 12; // degrees
 
@@ -104,12 +106,12 @@ const About = () => {
 
   return (
     <Section id="about">
-      <div className="about-page section-trigger" ref={pageRef}>
+      <div className="about-page section-trigger reveal" ref={pageRef}>
         <span className="section-watermark" aria-hidden="true">01</span>
 
         <div className="about-heading">
           <span className="about-line" />
-          <h1 className="about-title">Getting To Know Me</h1>
+          <TypedHeading text="Getting To Know Me" className="about-title" />
         </div>
 
         <div className="about-split">
@@ -183,7 +185,7 @@ const About = () => {
             <span className="bio-file-tag">// about.me</span>
 
             <p className="bio-para">
-              I'm a software engineer with over four years of experience building web,
+              I'm a software engineer with almost four years of experience building web,
               cloud, and data-driven systems across frontend, backend, and distributed architectures.
             </p>
             <p className="bio-para">

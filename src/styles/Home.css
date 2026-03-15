@@ -212,17 +212,28 @@
   /* ================================
      RESPONSIVE
   ================================ */
-  
+
   @media (max-width: 768px) {
     .terminal-window {
         border-radius: 10px;
+        width: 100%;
+        max-width: 100%;
     }
     .terminal-window .terminal-block {
         padding: 16px 18px 20px;
-        font-size: 14px;
+        font-size: 13px;
     }
     .terminal-h1 {
-        font-size: clamp(28px, 8vw, 44px);
+        font-size: clamp(22px, 5vw, 42px);
+    }
+    .home-page {
+        overflow-x: hidden;
+    }
+  }
+
+  @media (max-width: 480px) {
+    [data-theme] .particle-canvas {
+        opacity: 0;
     }
   }
 
@@ -280,6 +291,10 @@
   opacity: 1;
 }
 
+[data-theme="light"] .particle-canvas {
+  opacity: 0.7;
+}
+
 /* ================================
    GLITCH NAME EFFECT
    One-shot RGB split on first render, settles permanently
@@ -293,6 +308,34 @@
   40%  { text-shadow: -1px 0 #ff0080, 3px 0 #00f0ff; clip-path: inset(0% 0 90% 0);  transform: skewX(-1deg); }
   50%  { text-shadow: none; clip-path: none; transform: none; }
   100% { text-shadow: none; clip-path: none; transform: none; }
+}
+
+/* Light mode glitch — softer navy/teal split */
+[data-theme="light"] .glitch-name::before,
+[data-theme="light"] .glitch-name::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+}
+
+[data-theme="light"] .glitch-name::before {
+  color: #1a6b9a;
+  animation: glitchSettle 0.7s steps(1) 0.3s forwards;
+  opacity: 0;
+  animation-fill-mode: both;
+  mix-blend-mode: multiply;
+  clip-path: inset(0 0 60% 0);
+}
+
+[data-theme="light"] .glitch-name::after {
+  color: #0d8a8a;
+  animation: glitchSettle 0.7s steps(1) 0.45s forwards;
+  opacity: 0;
+  animation-fill-mode: both;
+  mix-blend-mode: multiply;
+  clip-path: inset(60% 0 0 0);
 }
 
 .glitch-name {

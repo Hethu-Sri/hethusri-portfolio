@@ -18,7 +18,10 @@ function useParticles(canvasRef) {
     const ctx = canvas.getContext("2d");
     const COUNT = 55;
     const CONNECT = 110;
+    const REPEL_RADIUS = 120;
+    const REPEL_FORCE = 2.8;
     let W, H, particles, rafId;
+    let mouseX = -9999, mouseY = -9999;
 
     const resize = () => {
       const parent = canvas.parentElement;
@@ -39,16 +42,29 @@ function useParticles(canvasRef) {
 
     const draw = () => {
       ctx.clearRect(0, 0, W, H);
-      const color = "91,200,245";
+      const isDark = document.body.getAttribute("data-theme") !== "light";
+      const color  = isDark ? "91,200,245" : "11,18,32";
+      const dotA   = isDark ? 0.55 : 0.5;
+      const lineA  = isDark ? 0.18 : 0.18;
 
       particles.forEach((p) => {
+        // Mouse repel
+        const dx = p.x - mouseX;
+        const dy = p.y - mouseY;
+        const d  = Math.sqrt(dx * dx + dy * dy);
+        if (d < REPEL_RADIUS && d > 0) {
+          const f = ((REPEL_RADIUS - d) / REPEL_RADIUS) * REPEL_FORCE;
+          p.x += (dx / d) * f;
+          p.y += (dy / d) * f;
+        }
+
         p.x += p.vx; p.y += p.vy;
         if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
         if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
 
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(${color},0.55)`;
+        ctx.fillStyle = `rgba(${color},${dotA})`;
         ctx.fill();
       });
 
@@ -61,7 +77,7 @@ function useParticles(canvasRef) {
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = `rgba(${color},${(1 - dist / CONNECT) * 0.18})`;
+            ctx.strokeStyle = `rgba(${color},${(1 - dist / CONNECT) * lineA})`;
             ctx.lineWidth = 0.8;
             ctx.stroke();
           }
@@ -70,13 +86,28 @@ function useParticles(canvasRef) {
       rafId = requestAnimationFrame(draw);
     };
 
+    const onMouseMove = (e) => {
+      const rect = canvas.getBoundingClientRect();
+      mouseX = e.clientX - rect.left;
+      mouseY = e.clientY - rect.top;
+    };
+    const onMouseLeave = () => { mouseX = -9999; mouseY = -9999; };
+
     init();
     draw();
 
+    const parent = canvas.parentElement;
+    parent.addEventListener("mousemove", onMouseMove);
+    parent.addEventListener("mouseleave", onMouseLeave);
     const ro = new ResizeObserver(init);
-    ro.observe(canvas.parentElement);
+    ro.observe(parent);
 
-    return () => { cancelAnimationFrame(rafId); ro.disconnect(); };
+    return () => {
+      cancelAnimationFrame(rafId);
+      ro.disconnect();
+      parent.removeEventListener("mousemove", onMouseMove);
+      parent.removeEventListener("mouseleave", onMouseLeave);
+    };
   }, [canvasRef]);
 }
 

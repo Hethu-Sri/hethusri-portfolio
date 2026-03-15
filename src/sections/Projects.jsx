@@ -1,6 +1,67 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "../styles/Projects.css";
 import { Github, ExternalLink } from "lucide-react";
+import TypedHeading from "../components/TypedHeading";
+
+const GIT_LOG = [
+  { hash: "a3f9b2c", msg: "feat: add F1 telemetry pipeline" },
+  { hash: "7e1c4d8", msg: "fix: resolve canvas memory leak" },
+  { hash: "2b5f1a9", msg: "feat: championship prediction model" },
+  { hash: "9d4e3c7", msg: "refactor: extract chart components" },
+  { hash: "4f8a2e1", msg: "feat: choropleth coordinated views" },
+  { hash: "1c7b5d3", msg: "fix: handle API rate limits" },
+  { hash: "8e2f4a6", msg: "chore: migrate Ergast → Jolpica" },
+  { hash: "3b9d1e5", msg: "feat: Wikipedia photo pipeline" },
+  { hash: "f6c3a7d", msg: "fix: Azure pipeline auth tokens" },
+  { hash: "d5e8b1f", msg: "feat: seismic risk globe render" },
+];
+
+const GitLogEgg = () => {
+  const [offset, setOffset] = useState(0);
+  const rafRef = useRef(null);
+  const lastTs = useRef(null);
+  const ROW_H = 22;
+
+  useEffect(() => {
+    const tick = (ts) => {
+      if (!lastTs.current) lastTs.current = ts;
+      const delta = ts - lastTs.current;
+      lastTs.current = ts;
+      setOffset((o) => (o + delta * 0.018) % (GIT_LOG.length * ROW_H));
+      rafRef.current = requestAnimationFrame(tick);
+    };
+    rafRef.current = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(rafRef.current);
+  }, []);
+
+  return (
+    <a
+      href="https://github.com/Hethu-Sri"
+      target="_blank"
+      rel="noreferrer"
+      className="git-log-egg"
+      aria-label="View GitHub profile"
+    >
+      <div className="git-log-header">
+        <span className="git-log-dot" />
+        <span className="git-log-dot" />
+        <span className="git-log-dot" />
+        <span className="git-log-title">git log --oneline</span>
+      </div>
+      <div className="git-log-viewport">
+        <div className="git-log-track" style={{ transform: `translateY(-${offset}px)` }}>
+          {[...GIT_LOG, ...GIT_LOG].map((entry, i) => (
+            <div key={i} className="git-log-row">
+              <span className="git-hash">{entry.hash}</span>
+              <span className="git-msg">{entry.msg}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+      <p className="git-log-cta">↗ view on github</p>
+    </a>
+  );
+};
 
 const projects = [
   {
@@ -18,6 +79,21 @@ const projects = [
   },
   {
     num: "02",
+    title: "F1 Analytics Dashboard",
+    github: "https://github.com/Hethu-Sri/f1-analytics-dashboard",
+    live: "https://f1-analytics-dashboard.vercel.app/",
+    intro: "Built a full-stack Formula 1 data platform covering 1950–2026, integrating OpenF1 and Jolpica APIs for live telemetry, lap timing, tire strategy, and historical standings.",
+    bullets: [
+      "Engineered a global API request queue serializing concurrent calls at 420ms intervals, eliminating rate limit errors across multiple chart components.",
+      "Built a championship prediction model using exponential decay on points gaps with a configurable races-remaining slider.",
+      
+    ],
+    back: "Full-stack F1 data platform covering 1950–2026 with live telemetry, lap timing, tire strategy, and historical standings. Features a championship prediction model with exponential decay, a global API request queue, and a Wikipedia photo pipeline with in-memory caching.",
+    tags: ["React", "TypeScript", "Recharts", "Framer Motion", "OpenF1 API"],
+  },
+  
+  {
+    num: "03",
     title: "Retail Analytics & Customer Insights Dashboard",
     github: "https://github.com/Hethu-Sri/RetailsAnalyticsPlatform",
     live: "https://finalprojectgroup19-gbhfbbeafjfdbnf5.centralus01.azurewebsites.net/",
@@ -30,7 +106,7 @@ const projects = [
     tags: ["React", "JavaScript", "Azure", "Data Analytics", "Azure SQL"],
   },
   {
-    num: "03",
+    num: "04",
     title: "Earthquake Data Visualization",
     github: "https://github.com/Hethu-Sri/EarthQuakeDataVisualization",
     live: "https://visual-interfaces-project-2.vercel.app/",
@@ -43,7 +119,7 @@ const projects = [
     tags: ["JavaScript", "D3.js", "Leaflet", "Data Visualization"],
   },
   {
-    num: "04",
+    num: "05",
     title: "Phineas & Ferb Series Visualization",
     github: "https://github.com/Hethu-Sri/PhineasAndFerb-Series-Visualization",
     live: "https://phineas-ferb-vis.netlify.app/",
@@ -133,13 +209,15 @@ const Projects = () => {
 
         <div className="project-heading reveal">
           <span className="project-line" />
-          <h1 className="project-title">Things I've Built</h1>
+          <TypedHeading text="Things I've Built" className="project-title" />
         </div>
 
         <p className="project-subtitle reveal" style={{ "--delay": "120ms" }}>
           Selected projects in data analytics, visualization, and full-stack development.{" "}
           <span className="project-flip-hint">↗ Click any card to flip</span>
         </p>
+
+        <GitLogEgg />
 
         <div className="projects-grid">
           {projects.map((project, idx) => (
@@ -161,14 +239,6 @@ const Projects = () => {
                     <div>
                       <div className="project-header">
                         <h3>{project.title}</h3>
-                        <div className="project-links" onClick={(e) => e.stopPropagation()}>
-                          <a href={project.github} target="_blank" rel="noreferrer" aria-label="GitHub">
-                            <Github size={16} />
-                          </a>
-                          <a href={project.live} target="_blank" rel="noreferrer" aria-label="Live Demo">
-                            <ExternalLink size={16} />
-                          </a>
-                        </div>
                       </div>
 
                       <ul className="project-points">
@@ -177,12 +247,7 @@ const Projects = () => {
                       </ul>
                     </div>
 
-                    <div>
-                      <div className="project-meta">
-                        {project.tags.map((t) => <span key={t}>{t}</span>)}
-                      </div>
-                      <p className="flip-hint">↗ click to flip</p>
-                    </div>
+                    <p className="flip-hint">↻ click to flip</p>
                   </div>
 
                   {/* ── BACK FACE ── */}

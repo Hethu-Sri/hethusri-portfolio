@@ -171,3 +171,9 @@
       display: none !important;
     }
   }
+
+  /* Touch targets for nav icons */
+  .nav-icons a {
+    min-width: 44px;
+    min-height: 44px;
+  }

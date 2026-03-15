@@ -22,9 +22,10 @@
 
 .about-line {
   width: 4px;
-  height: 32px;
-  background-color: var(--border-color);
-  opacity: 0.4;
+  height: 35px;
+  background-color: var(--accent);
+  opacity: 1;
+  flex-shrink: 0;
 }
 
 /* ================================
@@ -320,6 +321,14 @@
   transform: translateY(8px);
 }
 
+.stat-pill-num--text {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+
+
 .stat-pill + .stat-pill::before {
   content: "";
   position: absolute;
@@ -353,6 +362,13 @@
 [data-theme="light"] .stat-pill-num {
   color: #2a85b8;
   text-shadow: none;
+}
+
+.stat-pill-num--text {
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0;
+  white-space: nowrap;
 }
 
 .stat-pill-label {
@@ -430,6 +446,48 @@
 
 [data-theme="dark"] .bio-terminal {
   border-top-color: rgba(91, 200, 245, 0.1);
+}
+
+[data-theme="light"] .bio-terminal {
+  border-top-color: rgba(74, 157, 196, 0.3);
+  background: rgba(240, 248, 255, 0.6);
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid rgba(74, 157, 196, 0.2);
+  margin-top: 20px;
+}
+
+/* Light mode AR labels — better contrast */
+[data-theme="light"] .ar-label {
+  background: rgba(240, 248, 255, 0.92);
+  border-color: rgba(74, 157, 196, 0.4);
+}
+
+[data-theme="light"] .ar-key {
+  color: #2a7a9e;
+}
+
+[data-theme="light"] .ar-val {
+  color: #1a3a5c;
+}
+
+[data-theme="light"] .ar-dot {
+  background: #4a9dc4;
+  box-shadow: 0 0 4px rgba(74, 157, 196, 0.6);
+}
+
+[data-theme="light"] .ar-sep {
+  color: rgba(74, 157, 196, 0.6);
+}
+
+/* Light mode photo card border */
+[data-theme="light"] .photo-tilt-wrap {
+  border: 1px solid rgba(74, 157, 196, 0.25);
+  border-radius: 20px;
+}
+
+[data-theme="light"] .photo-frame {
+  border: 1px solid rgba(74, 157, 196, 0.15);
 }
 
 .bt-dollar { color: var(--muted-text); margin-right: 6px; }
@@ -518,4 +576,16 @@
   .about-title { font-size: 32px; }
   .stat-pill-num { font-size: 22px; }
   .ar-labels { bottom: 82px; }
+
+  /* Hide AR labels on mobile to avoid overflow */
+  .ar-labels,
+  .ar-label {
+    display: none;
+  }
+
+  /* Reduce stat pill font on mobile */
+  .stat-pill-label {
+    font-size: 11px;
+    padding: 4px 10px;
+  }
 }

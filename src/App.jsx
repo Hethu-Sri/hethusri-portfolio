@@ -14,7 +14,6 @@ import CustomCursor from "./components/CustomCursor";
 
 function App() {
   const [scrollPct, setScrollPct] = useState(0);
-
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -30,6 +29,7 @@ function App() {
     document.querySelectorAll('.reveal, .section-trigger').forEach((el) => observer.observe(el));
     return () => observer.disconnect();
   }, []);
+
 
   useEffect(() => {
     const onScroll = () => {

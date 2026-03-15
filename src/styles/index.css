@@ -113,6 +113,17 @@ body {
 
 
 
+/* ☀ LIGHT MODE — graph paper grid (visible dark lines) */
+body,
+body[data-theme="light"] {
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.07) 1px, transparent 1px);
+  background-size: 40px 40px;
+  background-position: 0 0;
+  background-color: var(--bg-color);
+}
+
 /* 🌙 DARK MODE — graph paper grid */
 body[data-theme="dark"] {
   background-image:
@@ -487,6 +498,23 @@ section,
   opacity: 1;
 }
 
+[data-theme="light"] .aurora-bg {
+  opacity: 1;
+}
+
+/* Light mode orb colors — soft warm blobs */
+[data-theme="light"] .aurora-orb-1 {
+  background: radial-gradient(circle, rgba(100, 180, 255, 0.18), transparent 70%);
+}
+
+[data-theme="light"] .aurora-orb-2 {
+  background: radial-gradient(circle, rgba(160, 210, 255, 0.14), transparent 70%);
+}
+
+[data-theme="light"] .aurora-orb-3 {
+  background: radial-gradient(circle, rgba(100, 160, 240, 0.12), transparent 70%);
+}
+
 .aurora-orb {
   position: absolute;
   border-radius: 50%;
@@ -714,15 +742,27 @@ section,
   opacity: 1;
 }
 
+[data-theme="light"] .top-accent-bar {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(74, 157, 196, 0.0) 10%,
+    #4a9dc4 40%,
+    rgba(74, 157, 196, 0.6) 70%,
+    transparent 100%
+  );
+  opacity: 1;
+}
+
 /* ================================
    SECTION WATERMARKS
 ================================ */
 
 .section-watermark {
   position: absolute;
-  top: -20px;
+  top: 0;
   right: -10px;
-  font-size: 160px;
+  font-size: clamp(80px, 20vw, 160px);
   font-weight: 900;
   line-height: 0.9;
   color: var(--accent);
@@ -732,6 +772,11 @@ section,
   font-family: "Courier Prime", monospace;
   letter-spacing: -6px;
   z-index: 0;
+}
+
+[data-theme="light"] .section-watermark {
+  color: rgba(0, 0, 0, 0.055);
+  opacity: 1;
 }
 
 [data-theme="dark"] .section-watermark {
@@ -829,6 +874,55 @@ section,
     margin-top: 2px;
     display: flex;
     justify-content: center;
+  }
+}
+
+/* ================================
+   LIGHT MODE NAV ACTIVE GLOW
+================================ */
+
+[data-theme="light"] .nav-icons a.active .icon {
+  box-shadow: 0 0 0 2px rgba(74, 157, 196, 0.5);
+}
+
+/* ================================
+   GLOBAL MOBILE OVERFLOW + TAP
+================================ */
+
+@media (max-width: 768px) {
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+  html {
+    overflow-x: hidden;
+  }
+  body {
+    overflow-x: hidden;
+  }
+}
+
+/* ================================
+   MOBILE SECTION PADDING (refined)
+================================ */
+
+@media (max-width: 768px) {
+  .section {
+    padding: 60px 20px;
+  }
+  h1, h2, h3 {
+    font-size: clamp(28px, 6vw, 40px);
+  }
+}
+
+@media (max-width: 480px) {
+  .section {
+    padding: 40px 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .section-watermark {
+    right: 0;
   }
 }
 

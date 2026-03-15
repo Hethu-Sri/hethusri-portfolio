@@ -1,0 +1,12 @@
+.th-cursor {
+  display: inline-block;
+  color: var(--accent);
+  animation: thBlink 0.65s step-end infinite;
+  margin-left: 1px;
+  font-weight: 400;
+  opacity: 1;
+}
+
+@keyframes thBlink {
+  50% { opacity: 0; }
+}

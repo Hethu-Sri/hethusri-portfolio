@@ -1,7 +1,89 @@
+import { useState, useRef } from "react";
 import Section from "../components/Section";
+import TypedHeading from "../components/TypedHeading";
 import "../styles/Skills.css";
 
+const CATEGORIES = [
+  {
+    id: "languages",   file: "languages.js",    varName: "languages",
+    prop: "core",
+    tags: ["JavaScript", "TypeScript", "Python", "Java", "C++", "C"],
+  },
+  {
+    id: "frontend",    file: "frontend.js",      varName: "frontend",
+    prop: "ui",
+    tags: ["React", "D3.js", "Leaflet", "HTML5", "CSS3"],
+  },
+  {
+    id: "backend",     file: "backend.js",        varName: "backend",
+    prop: "services",
+    tags: ["Node.js", "Express.js", "REST APIs", "Microservices", "Serverless", "Event-Driven"],
+  },
+  {
+    id: "cloud",       file: "cloud-devops.js",   varName: "cloud",
+    prop: "infra",
+    tags: ["AWS Lambda", "EventBridge", "Aurora PostgreSQL", "Docker", "GitLab CI/CD"],
+  },
+  {
+    id: "databases",   file: "databases.js",      varName: "databases",
+    prop: "stores",
+    tags: ["PostgreSQL", "MySQL", "MongoDB", "Drizzle ORM"],
+  },
+  {
+    id: "tools",       file: "tools.js",          varName: "tools",
+    prop: "practices",
+    tags: ["Git", "SonarQube", "GitLab CI/CD", "Agile / Scrum"],
+  },
+];
+
+// Build code lines for the active category
+const buildLines = (cat) => [
+  { li: 0, content: <><span className="tk-kw">const </span><span className="tk-fn">{cat.varName}</span><span className="tk-op"> = </span><span className="tk-brace">{"{"}</span></> },
+  { li: 1, content: <><span className="tk-ws">{"  "}</span><span className="tk-key">{cat.prop}</span><span className="tk-op">: </span><span className="tk-brace">{"["}</span></> },
+  ...cat.tags.map((tag, i) => ({
+    li: 2 + i,
+    content: <><span className="tk-ws">{"    "}</span><span className="tk-str">{`"${tag}"`}</span><span className="tk-op">,</span></>,
+  })),
+  { li: 2 + cat.tags.length,     content: <><span className="tk-ws">{"  "}</span><span className="tk-brace">{"],"}</span></> },
+  { li: 3 + cat.tags.length,     content: <><span className="tk-brace">{"}"}</span><span className="tk-op">;</span></> },
+  { li: 4 + cat.tags.length,     content: null },   // blank
+  { li: 5 + cat.tags.length,     content: <><span className="tk-kw">export default </span><span className="tk-fn">{cat.varName}</span><span className="tk-op">;</span></> },
+];
+
+const MAX_TILT = 5;
+
 const Skills = () => {
+  const [activeId, setActiveId] = useState("languages");
+  const [panelKey, setPanelKey] = useState(0);
+  const windowRef = useRef(null);
+
+  const active = CATEGORIES.find((c) => c.id === activeId);
+
+  const switchTo = (id) => {
+    if (id === activeId) return;
+    setActiveId(id);
+    setPanelKey((k) => k + 1);
+  };
+
+  const onMouseMove = (e) => {
+    const el = windowRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const nx = (e.clientX - rect.left) / rect.width - 0.5;
+    const ny = (e.clientY - rect.top) / rect.height - 0.5;
+    el.style.transition = "box-shadow 0.1s ease, border-color 0.1s ease";
+    el.style.transform = `perspective(1400px) rotateX(${-ny * MAX_TILT * 2}deg) rotateY(${nx * MAX_TILT * 2}deg)`;
+  };
+
+  const onMouseLeave = () => {
+    const el = windowRef.current;
+    if (!el) return;
+    el.style.transition = "transform 0.7s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.4s ease, border-color 0.4s ease";
+    el.style.transform = "";
+  };
+
+  const lines = buildLines(active);
+
   return (
     <Section id="skills">
       <div className="skills-wrapper reveal">
@@ -9,59 +91,73 @@ const Skills = () => {
 
         <div className="skills-heading">
           <span className="skills-line" />
-          <h1 className="skills-title">What I Work With</h1>
+          <TypedHeading text="What I Work With" className="skills-title" />
         </div>
 
-        <div className="skills-layout">
-          {/* LEFT: Narrative */}
-          <div className="skills-text">
-            <p className="skills-copy">
-              I work primarily with JavaScript, TypeScript, Python, and SQL across
-              React, Node.js, and data-visualization workflows, integrating
-              relational and NoSQL databases, cloud data pipelines, and
-              CI/CD-driven deployments on Microsoft Azure.
-            </p>
+        <div
+          className="ce-window"
+          ref={windowRef}
+          onMouseMove={onMouseMove}
+          onMouseLeave={onMouseLeave}
+        >
 
-            <p className="skills-copy">
-              I build systems across frontend, backend, data, and cloud
-              infrastructure. My work focuses on designing RESTful APIs,
-              event-driven and serverless services, and scalable microservice
-              architectures.
-            </p>
+          {/* ── Titlebar ── */}
+          <div className="ce-titlebar">
+            <div className="ce-dots">
+              <span className="ce-dot ce-dot--r" aria-hidden="true" />
+              <span className="ce-dot ce-dot--y" aria-hidden="true" />
+              <span className="ce-dot ce-dot--g" aria-hidden="true" />
+            </div>
+            <div className="ce-tabs">
+              <div className="ce-tab">
+                <span className="ce-tab-badge">JS</span>
+                <span className="ce-tab-filename">{active.file}</span>
+                <select
+                  className="ce-tab-select"
+                  value={activeId}
+                  onChange={(e) => switchTo(e.target.value)}
+                  aria-label="Select skill category"
+                >
+                  {CATEGORIES.map((cat) => (
+                    <option key={cat.id} value={cat.id}>{cat.file}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
           </div>
 
-          {/* RIGHT: Code file */}
-          <div className="skills-code-file">
-            <div className="code-file-tabbar">
-              <span className="code-file-tab">
-                <span className="code-file-lang">JS</span>
-                skills.config.js
-              </span>
-            </div>
-            <div className="code-file-body">
+          {/* ── Editor body ── */}
+          <div className="ce-editor">
 
-              <div className="code-line" style={{"--i":0}}><span className="code-ln">1</span><span className="code-cnt"><span className="tk-kw">const</span> <span className="tk-fn">skills</span> <span className="tk-op">=</span> <span className="tk-brace">{"{"}</span></span></div>
-              <div className="code-line" style={{"--i":1}}><span className="code-ln">2</span><span className="code-cnt"></span></div>
-              <div className="code-line" style={{"--i":2}}><span className="code-ln">3</span><span className="code-cnt"><span className="tk-cmt">{"  // core languages"}</span></span></div>
-              <div className="code-line" style={{"--i":3}}><span className="code-ln">4</span><span className="code-cnt">{"  "}<span className="tk-key">languages</span><span className="tk-op">:</span> [<span className="tk-str">"Python"</span>, <span className="tk-str">"Java"</span>, <span className="tk-str">"C++"</span>, <span className="tk-str">"C"</span>],</span></div>
-              <div className="code-line" style={{"--i":4}}><span className="code-ln">5</span><span className="code-cnt"></span></div>
-              <div className="code-line" style={{"--i":5}}><span className="code-ln">6</span><span className="code-cnt"><span className="tk-cmt">{"  // web & frontend"}</span></span></div>
-              <div className="code-line" style={{"--i":6}}><span className="code-ln">7</span><span className="code-cnt">{"  "}<span className="tk-key">web</span><span className="tk-op">:</span> [<span className="tk-str">"JS"</span>, <span className="tk-str">"TS"</span>, <span className="tk-str">"React"</span>, <span className="tk-str">"D3.js"</span>, <span className="tk-str">"Node.js"</span>],</span></div>
-              <div className="code-line" style={{"--i":7}}><span className="code-ln">8</span><span className="code-cnt"></span></div>
-              <div className="code-line" style={{"--i":8}}><span className="code-ln">9</span><span className="code-cnt"><span className="tk-cmt">{"  // databases & APIs"}</span></span></div>
-              <div className="code-line" style={{"--i":9}}><span className="code-ln">10</span><span className="code-cnt">{"  "}<span className="tk-key">db</span><span className="tk-op">:</span> [<span className="tk-str">"SQL"</span>, <span className="tk-str">"MySQL"</span>, <span className="tk-str">"MongoDB"</span>, <span className="tk-str">"Azure SQL"</span>],</span></div>
-              <div className="code-line" style={{"--i":10}}><span className="code-ln">11</span><span className="code-cnt"></span></div>
-              <div className="code-line" style={{"--i":11}}><span className="code-ln">12</span><span className="code-cnt"><span className="tk-cmt">{"  // cloud & devops"}</span></span></div>
-              <div className="code-line" style={{"--i":12}}><span className="code-ln">13</span><span className="code-cnt">{"  "}<span className="tk-key">cloud</span><span className="tk-op">:</span> [<span className="tk-str">"Azure"</span>, <span className="tk-str">"Docker"</span>, <span className="tk-str">"CI/CD"</span>, <span className="tk-str">"GitHub"</span>],</span></div>
-              <div className="code-line" style={{"--i":13}}><span className="code-ln">14</span><span className="code-cnt"></span></div>
-              <div className="code-line" style={{"--i":14}}><span className="code-ln">15</span><span className="code-cnt"><span className="tk-cmt">{"  // architecture"}</span></span></div>
-              <div className="code-line" style={{"--i":15}}><span className="code-ln">16</span><span className="code-cnt">{"  "}<span className="tk-key">arch</span><span className="tk-op">:</span> [<span className="tk-str">"Microservices"</span>, <span className="tk-str">"Serverless"</span>, <span className="tk-str">"REST"</span>],</span></div>
-              <div className="code-line" style={{"--i":16}}><span className="code-ln">17</span><span className="code-cnt"></span></div>
-              <div className="code-line" style={{"--i":17}}><span className="code-ln">18</span><span className="code-cnt"><span className="tk-brace">{"}"}</span><span className="tk-op">;</span></span></div>
-              <div className="code-line" style={{"--i":18}}><span className="code-ln">19</span><span className="code-cnt"></span></div>
-              <div className="code-line" style={{"--i":19}}><span className="code-ln">20</span><span className="code-cnt"><span className="tk-kw">export default</span> <span className="tk-fn">skills</span><span className="tk-op">;</span></span></div>
+            {/* Left: file tree */}
+            <aside className="ce-filetree">
+              <div className="ce-ft-root">
+                <span className="ce-ft-chevron">▾</span>
+                <span className="ce-ft-folder">skills</span>
+              </div>
+              {CATEGORIES.map((cat, i) => (
+                <button
+                  key={cat.id}
+                  className={`ce-ft-item${activeId === cat.id ? " ce-ft-item--active" : ""}`}
+                  onClick={() => switchTo(cat.id)}
+                  style={{ "--fi": i }}
+                >
+                  <span className="ce-ft-badge">JS</span>
+                  <span className="ce-ft-name">{cat.file}</span>
+                </button>
+              ))}
+            </aside>
 
+            {/* Right: code panel */}
+            <div key={panelKey} className="ce-code">
+              {lines.map(({ li, content }) => (
+                <div key={li} className="ce-line" style={{ "--li": li }}>
+                  <span className="ce-ln">{li + 1}</span>
+                  <span className="ce-cnt">{content}</span>
+                </div>
+              ))}
             </div>
+
           </div>
         </div>
       </div>

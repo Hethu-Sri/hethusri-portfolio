@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import Section from "../components/Section";
+import TypedHeading from "../components/TypedHeading";
 import "../styles/Experience.css";
+
 
 const ROLES = [
   {
@@ -85,6 +87,7 @@ const ROLES = [
 const Experience = () => {
   const [active, setActive] = useState("abs");
   const [panelKey, setPanelKey] = useState(0);
+  const [accordionOpen, setAccordionOpen] = useState("abs");
   const wrapperRef = useRef(null);
   const [lineH, setLineH] = useState(0);
 
@@ -92,6 +95,10 @@ const Experience = () => {
     if (key === active) return;
     setActive(key);
     setPanelKey((k) => k + 1);
+  };
+
+  const toggleAccordion = (key) => {
+    setAccordionOpen((prev) => (prev === key ? null : key));
   };
 
   // Draw timeline line on reveal
@@ -117,7 +124,7 @@ const Experience = () => {
 
         <div className="experience-heading">
           <span className="experience-line" />
-          <h1 className="experience-title">Where I've Worked</h1>
+          <TypedHeading text="Where I've Worked" className="experience-title" />
         </div>
 
         <div className="exp-split">
@@ -172,6 +179,34 @@ const Experience = () => {
           </div>
 
         </div>
+
+        {/* ── MOBILE: accordion ── */}
+        <div className="exp-accordion">
+          {ROLES.map((r) => {
+            const isOpen = accordionOpen === r.key;
+            return (
+              <div key={r.key} className={`acc-item${isOpen ? " acc-item--open" : ""}`}>
+                <button className="acc-header" onClick={() => toggleAccordion(r.key)}>
+                  <div className="acc-header-info">
+                    <span className="acc-company">{r.company}</span>
+                    <span className="acc-role">{r.role}</span>
+                    <span className="acc-date">{r.date}</span>
+                  </div>
+                  <span className="acc-chevron">{isOpen ? "▴" : "▾"}</span>
+                </button>
+                <div className="acc-body">
+                  <ul className="ep-bullets">
+                    {r.bullets.map((b, i) => <li key={i} style={{ "--bi": i }}>{b}</li>)}
+                  </ul>
+                  <div className="ep-tech">
+                    {r.tech.map((t, i) => <span key={t} style={{ "--ti": i }}>{t}</span>)}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
       </div>
     </Section>
   );
