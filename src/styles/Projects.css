@@ -687,9 +687,12 @@
     position: relative;
     inset: unset;
     height: auto;
+    backface-visibility: visible;
+    -webkit-backface-visibility: visible;
   }
 
   .card-back {
+    transform: none;
     display: none;
   }
 
